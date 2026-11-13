@@ -44,7 +44,7 @@ Share only `scoring-packet.json` and the rubric with the evaluator. Never share 
 
 ## Score sheet format
 
-The rubric and private-key hashes use SHA-256 over canonical JSON (UTF-8, sorted keys, compact separators). The report hash binds scores to the exact experiment specification. The evaluator receives the score sheet and private key only after the scorer has locked its judgements.
+The rubric hash uses SHA-256 over canonical JSON (UTF-8, sorted keys, compact separators). The report hash binds scores to the exact experiment specification. The evaluator receives the score sheet and private key only after the scorer has locked its judgements. A controller may optionally add the private-key hash to the score sheet; it is not needed for normal scoring.
 
 ```json
 {
