@@ -6,7 +6,7 @@ This repository is independent of any specific skill collection, model, agent, o
 
 ## What it is for
 
-Use the runtime to compare a baseline against an intervention while keeping each trial isolated and its evidence traceable. An intervention can be a skill, system instruction, reference document, prompt strategy, model configuration, tool policy, dataset slice, or a resource bundle. The runtime is designed to grow beyond skills into experiments on other AI systems and workflows.
+Use the runtime to compare a baseline against an intervention while keeping each trial isolated and its evidence traceable. In this first release, interventions are text-based: condition-specific system instructions and UTF-8 resources such as a skill file or reference document. The exact task is presented to both conditions, the provider/model configuration is shared, and the runner repeats trials with randomized A/B execution order.
 
 The initial release includes:
 
@@ -22,7 +22,7 @@ The initial release includes:
 
 Q-Batch verifies run records, artifact integrity, and controlled-pair instrumentation. It does not grade a model response, prove a skill is effective, or establish causation. This runtime therefore labels quality scoring as not performed unless a separate evaluator is added. Human or independent evaluation should be done offline against predeclared criteria.
 
-The first provider adapter handles text chat. Future subject adapters can extend the runtime to software, image/video, audio, robotics, and other domains, but those adapters, arbitrary tool execution, and sandboxed code execution are not implemented in this initial slice.
+The first provider adapter handles text chat. Future subject adapters can extend the runtime to software, image/video, audio, robotics, dataset/retrieval, and tool-using-agent experiments. Those adapters are not implemented in this initial slice. Neither arbitrary tool execution nor sandboxed code execution is supported.
 
 ## Set up
 
