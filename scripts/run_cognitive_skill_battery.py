@@ -24,9 +24,9 @@ def main() -> int:
     parser.add_argument("--output", default="artifacts/cognitive-skill-battery")
     parser.add_argument("--skills", nargs="*", choices=SKILLS, default=SKILLS)
     parser.add_argument("--qbatch-path", default=".vendor/q-batch-of-evidence")
+    parser.add_argument("--model", default="qwen2.5:7b", help="Local Ollama model tag")
+    parser.add_argument("--base-url", default="http://127.0.0.1:11434/v1", help="OpenAI-compatible local inference endpoint")
     args = parser.parse_args()
-    if not os.environ.get("AI_RUNTIME_API_KEY"):
-        raise SystemExit("AI_RUNTIME_API_KEY is not set; refusing to substitute mock outputs for a real skill test.")
     qbatch = (ROOT / args.qbatch_path).resolve()
     if not (qbatch / ".git").exists():
         raise SystemExit(f"Pinned Q-Batch checkout not found: {qbatch}")
@@ -55,6 +55,12 @@ def main() -> int:
         # scorer sees neither this mapping nor the skill resource prompt.
         run_spec = SUITE / f".{skill_id}-{secrets.token_hex(6)}.json"
         spec_doc = json.loads(spec.read_text(encoding="utf-8"))
+        # Run entirely against a local OpenAI-compatible inference server (Ollama by default).
+        # No API credential or paid hosted inference is required.
+        spec_doc["provider"]["type"] = "openai-compatible"
+        spec_doc["provider"]["base_url"] = args.base_url.rstrip("/")
+        spec_doc["provider"]["model"] = args.model
+        spec_doc["provider"].pop("api_key_env", None)
         flip_labels = secrets.choice([False, True])
         for condition in spec_doc["conditions"]:
             condition["label"] = (
@@ -125,6 +131,7 @@ def main() -> int:
 
     (output / "index.json").write_text(json.dumps({
         "suite_revision": "fc530b6815eead24aa8655cbbb4bfe0dd8c9f666",
+        "inference": {"provider": "local-openai-compatible", "base_url": args.base_url, "model": args.model},
         "skills": index,
         "note": "Keep every controller/private-key directory away from scorers. Share only scorer/scoring-packet.json and scorer/rubric.json.",
     }, indent=2) + "\n", encoding="utf-8")
