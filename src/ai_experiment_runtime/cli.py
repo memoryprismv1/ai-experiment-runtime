@@ -47,7 +47,7 @@ def main(argv: list[str] | None = None) -> int:
             result = evaluate_report(args.report, args.rubric, args.scores, args.private_key)
             output = Path(args.output)
             output.parent.mkdir(parents=True, exist_ok=True)
-            output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
             print(json.dumps(result, indent=2, sort_keys=True))
             return 0
         _, _, validators = load_qbatch(args.qbatch_path)
