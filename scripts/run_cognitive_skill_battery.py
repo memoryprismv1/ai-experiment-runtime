@@ -24,7 +24,7 @@ def main() -> int:
     parser.add_argument("--output", default="artifacts/cognitive-skill-battery")
     parser.add_argument("--skills", nargs="*", choices=SKILLS, default=SKILLS)
     parser.add_argument("--qbatch-path", default=".vendor/q-batch-of-evidence")
-    parser.add_argument("--model", default="qwen2.5:7b", help="Local Ollama model tag")
+    parser.add_argument("--model", default="qwen2.5:3b", help="Local Ollama model tag")
     parser.add_argument("--base-url", default="http://127.0.0.1:11434/v1", help="OpenAI-compatible local inference endpoint")
     args = parser.parse_args()
     qbatch = (ROOT / args.qbatch_path).resolve()
