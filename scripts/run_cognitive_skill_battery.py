@@ -73,7 +73,7 @@ def main() -> int:
         "suite_revision": "fc530b6815eead24aa8655cbbb4bfe0dd8c9f666",
         "skills": index,
         "note": "Keep every controller/private-key directory away from scorers. Share only scorer/scoring-packet.json and scorer/rubric.json.",
-    }, indent=2) + "\\n", encoding="utf-8")
+    }, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"output": str(output), "skills_run": len(index)}, indent=2))
     return 0
 
