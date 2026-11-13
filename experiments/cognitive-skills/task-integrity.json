@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "cognitive-task-integrity",
+  "title": "Task Integrity: baseline vs canonical skill",
+  "description": "Paired skill evaluation. Canonical skill source revision: fc530b6815eead24aa8655cbbb4bfe0dd8c9f666. Baseline A versus skill-loaded B. Outputs require independent blinded scoring; Q-Batch verifies instrumentation only.",
+  "provider": {
+    "type": "openai-compatible",
+    "base_url": "https://api.openai.com/v1",
+    "model": "REPLACE_WITH_MODEL_ID",
+    "temperature": 0,
+    "max_tokens": 1800,
+    "timeout_seconds": 180,
+    "api_key_env": "AI_RUNTIME_API_KEY"
+  },
+  "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
+  "tasks": [
+    {
+      "id": "scope-accountability",
+      "prompt": "Request: 'Update the README, add an installation guide, preserve the existing examples, run the test suite, and do not change the public API.' Status report: 'README updated; installation guide drafted; examples retained; tests not run; public API unchanged.' Assess completion. Identify what is complete, incomplete and not yet verified."
+    },
+    {
+      "id": "multi-constraint-plan",
+      "prompt": "Plan work for a repository change with these requirements: keep the API backward-compatible; update migration docs; add regression tests; preserve existing config files; verify on Python 3.11 and 3.12; do not modify generated assets. Produce a traceable plan that makes omissions visible."
+    },
+    {
+      "id": "scope-drift",
+      "prompt": "User asked to fix a broken export. During investigation you discover an unrelated formatting problem and a possible refactor. Decide what belongs in scope, what should be recorded separately, and what must not silently expand the task."
+    }
+  ],
+  "conditions": [
+    {
+      "id": "baseline",
+      "label": "A",
+      "system_instruction": "No experimental skill resource is loaded. Follow only the shared system prompt and task."
+    },
+    {
+      "id": "skill-enabled",
+      "label": "B",
+      "resources": [
+        {
+          "name": "task-integrity",
+          "path": "../../.vendor/cognitive-interface-ai-skills/task-integrity/SKILL.md"
+        }
+      ]
+    }
+  ],
+  "trials_per_task": 2,
+  "random_seed": 20261113
+}
