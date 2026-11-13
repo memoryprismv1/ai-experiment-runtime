@@ -57,8 +57,25 @@ def call_provider(config: Mapping[str, Any], system_prompt: str, user_prompt: st
             raw_bytes = response.read()
             provider_request_id = response.headers.get("x-request-id") or response.headers.get("request-id")
     except urllib.error.HTTPError as exc:
-        # Do not echo provider response bodies; they may include private prompt data.
-        raise ProviderError(f"provider returned HTTP {exc.code}") from exc
+        # Preserve only stable, non-sensitive provider error classifications.
+        # Never copy a provider body or request payload into experiment evidence.
+        error_code = None
+        error_type = None
+        try:
+            error_doc = json.loads(exc.read().decode("utf-8"))
+            error_info = error_doc.get("error", {}) if isinstance(error_doc, dict) else {}
+            if isinstance(error_info, dict):
+                error_code = error_info.get("code")
+                error_type = error_info.get("type")
+        except (UnicodeDecodeError, json.JSONDecodeError, OSError):
+            pass
+        detail = []
+        if isinstance(error_code, str) and error_code:
+            detail.append(f"code={error_code[:80]}")
+        if isinstance(error_type, str) and error_type:
+            detail.append(f"type={error_type[:80]}")
+        suffix = f" ({', '.join(detail)})" if detail else ""
+        raise ProviderError(f"provider returned HTTP {exc.code}{suffix}") from exc
     except (urllib.error.URLError, TimeoutError, OSError) as exc:
         raise ProviderError(f"provider transport failed: {type(exc).__name__}") from exc
     latency = round((time.monotonic() - started) * 1000, 3)
