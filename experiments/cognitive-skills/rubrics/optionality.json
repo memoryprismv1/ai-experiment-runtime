@@ -1,0 +1,50 @@
+{
+  "skill_id": "optionality",
+  "skill_revision": "fc530b6815eead24aa8655cbbb4bfe0dd8c9f666",
+  "criteria": [
+    {
+      "id": "meaningful_distinction",
+      "description": "Alternatives differ in mechanism, assumptions or constraints",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "development",
+      "description": "Explains implications rather than merely listing options",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "restraint",
+      "description": "Avoids unnecessary branching and cognitive burden",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "user_agency",
+      "description": "Preserves the user's authority to activate, choose or stop exploration",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    }
+  ]
+}
