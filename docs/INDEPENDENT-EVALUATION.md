@@ -1,14 +1,26 @@
 # Independent evaluation
 
-Q-Batch verification and quality evaluation are separate stages.
+Q-Batch verification and response-quality evaluation are separate stages.
 
-1. Run the experiment and verify its evidence with Q-Batch.
-2. Prepare a rubric before inspecting the condition outputs. Use observable criteria, explicit score ranges, and anchored descriptions.
-3. Give an evaluator the responses under blind run IDs/labels. Keep the controller condition key separate until scoring is complete.
-4. Record one score per run per criterion in a score sheet.
-5. Run `aier evaluate` to validate completeness and calculate descriptive paired differences.
+1. Run the experiment. Q-Batch checks evidence integrity and paired-run instrumentation.
+2. Export a blinded packet. The packet contains task prompts and responses under opaque IDs. It does not contain condition labels, resource files, or the intervention mapping.
+3. Give the scorer only the packet and the predeclared rubric. Keep the private key in the controller's custody.
+4. Lock the scores. The scorer returns one score per sample and criterion.
+5. Run the evaluator with the private key. It resolves opaque IDs to A/B only after scoring is complete and calculates descriptive paired differences.
 
-The evaluator does not call a model, infer scores from response text, or decide which condition is better. It accepts externally supplied scores only.
+The evaluator does not call a model or infer scores from response text. It accepts externally supplied scores only.
+
+## Blinded export
+
+```bash
+aier blind-export \
+  --report path/to/experiment/reports/batch-report.json \
+  --spec path/to/experiment.json \
+  --packet scorer/scoring-packet.json \
+  --private-key controller/blind-key.json
+```
+
+Share only `scoring-packet.json` and the rubric with the evaluator. Never share `blind-key.json` or raw Q-Batch run directories with the scorer. The packet shuffles sample order and replaces run IDs with random opaque IDs.
 
 ## Rubric format
 
@@ -32,20 +44,32 @@ The evaluator does not call a model, infer scores from response text, or decide 
 
 ## Score sheet format
 
-The rubric hash is SHA-256 over canonical JSON (UTF-8, sorted keys, compact separators). The report hash binds scores to the exact experiment specification.
+The rubric and private-key hashes use SHA-256 over canonical JSON (UTF-8, sorted keys, compact separators). The report hash binds scores to the exact experiment specification. The evaluator receives the score sheet and private key only after the scorer has locked its judgements.
 
 ```json
 {
   "experiment_id": "example",
-  "report_spec_sha256": "COPY_FROM_BATCH_REPORT",
+  "report_spec_sha256": "COPY_FROM_SCORING_PACKET",
   "rubric_sha256": "SHA256_OF_CANONICAL_RUBRIC",
+  "blind_key_sha256": "CONTROLLER_SUPPLIES_AFTER_SCORING",
   "evaluator_id": "reviewer-01",
   "scores": [
-    {"run_id": "RUN_ID_FROM_REPORT", "values": {"task_accuracy": 3}}
+    {"blind_id": "sample-opaque-id", "values": {"task_accuracy": 3}}
   ]
 }
 ```
 
+Evaluation command:
+
+```bash
+aier evaluate \
+  --report path/to/batch-report.json \
+  --rubric path/to/rubric.json \
+  --scores path/to/scores.json \
+  --private-key controller/blind-key.json \
+  --output evaluation.json
+```
+
 Every completed run must have exactly one score for every rubric criterion. Duplicate, missing, unknown, non-finite, or out-of-range scores are rejected. The evaluation output reports per-condition means and paired B-minus-A differences by criterion.
 
-These are descriptive summaries. The runtime does not calculate significance, confidence intervals, or causal effects. Repeated trials are not automatically independent samples, and evaluator agreement/reliability must be handled by the evaluation protocol. Preserve the blind until scoring is locked; the generated evaluation file intentionally retains A/B labels rather than resolving the condition key.
+These are descriptive summaries. The runtime does not calculate significance, confidence intervals, or causal effects. Repeated trials are not automatically independent samples, and evaluator agreement/reliability must be handled by the evaluation protocol.
