@@ -15,16 +15,16 @@
   "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
   "tasks": [
     {
-      "id": "unexpected-observation",
-      "prompt": "I noticed a small flower that looks as if it has a transparent window. Someone says it is just a lighting effect. Investigate the possibilities. Do not assume either explanation. What observations and existing knowledge would help distinguish them?"
+      "id": "tree-boulder-causal-timeline",
+      "prompt": "A video shows a thin, curved tree apparently holding a large boulder. One explanation says the tree grew around it. But the stem looks juvenile, the crown needs light, and the boulder may be supported by lower rocks. Investigate plausible natural growth, deliberate construction, staging and synthetic-media explanations. Reconstruct the causal timeline needed for each. Do not assume the clip is real or fake."
     },
     {
-      "id": "claim-mismatch",
-      "prompt": "A report says a device is 'offline', but its logs show successful authenticated requests every minute. Investigate the mismatch. Identify plausible meanings of offline, what the logs establish, and what evidence would resolve the issue."
+      "id": "trap-jaw-mechanism",
+      "prompt": "How do trap-jaw ants generate extremely fast jaw strikes? Explore the mechanism, whether similar mechanisms evolved more than once, possible uses beyond prey capture, and what engineering has actually transferred. Separate established findings from predictions and unknowns."
     },
     {
-      "id": "causal-reconstruction",
-      "prompt": "A town's bird population fell after a new streetlight system was installed. A local report concludes the lights caused the decline. Build competing explanations, identify confounders and reconstruct what evidence would support or weaken each explanation."
+      "id": "wet-transparent-flower",
+      "prompt": "A flower becomes translucent when wet. I suspect the effect may come from its structure rather than being an adaptation whose primary purpose is transparency. Investigate both possibilities, the physical mechanism, what comparisons with related species could reveal, and what evidence would distinguish them."
     }
   ],
   "conditions": [
