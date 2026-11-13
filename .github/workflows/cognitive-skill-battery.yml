@@ -3,11 +3,21 @@ name: Real cognitive-skill A/B battery
 on:
   workflow_dispatch:
     inputs:
-      skills:
-        description: "Space-separated skill IDs; leave blank to run all ten"
-        required: false
-        type: string
-        default: ""
+      skill:
+        description: "Run exactly one cognitive skill in an isolated experiment"
+        required: true
+        type: choice
+        options:
+          - automaticity
+          - a-touch-of-grace
+          - critical-thinking
+          - context-course-correction
+          - good-faith-collaboration
+          - peer-review
+          - optionality
+          - software-literacy
+          - task-integrity
+          - verification-integrity
 
 permissions:
   contents: read
@@ -40,33 +50,33 @@ jobs:
       - name: Run real-model cognitive-skill experiments
         env:
           AI_RUNTIME_API_KEY: ${{ secrets.AI_RUNTIME_API_KEY }}
-          SKILLS_INPUT: ${{ inputs.skills }}
+          SKILL_ID: ${{ inputs.skill }}
+          RUN_OUTPUT: artifacts/cognitive-skill-battery/${{ github.run_id }}
         shell: bash
         run: |
           if [[ -z "${AI_RUNTIME_API_KEY}" ]]; then
             echo "::error::Repository secret AI_RUNTIME_API_KEY is missing."
             exit 1
           fi
-          if [[ -n "${SKILLS_INPUT}" ]]; then
-            read -r -a selected_skills <<< "${SKILLS_INPUT}"
-            .venv/bin/python scripts/run_cognitive_skill_battery.py --skills "${selected_skills[@]}"
-          else
-            .venv/bin/python scripts/run_cognitive_skill_battery.py
-          fi
+          case "${SKILL_ID}" in
+            automaticity|a-touch-of-grace|critical-thinking|context-course-correction|good-faith-collaboration|peer-review|optionality|software-literacy|task-integrity|verification-integrity) ;;
+            *) echo "::error::Select exactly one supported skill."; exit 1 ;;
+          esac
+          .venv/bin/python scripts/run_cognitive_skill_battery.py --skills "${SKILL_ID}" --output "${RUN_OUTPUT}"
       - name: Upload blinded scorer packets
         uses: actions/upload-artifact@v4
         with:
-          name: cognitive-skill-scorer-packets
-          path: artifacts/cognitive-skill-battery/*/scorer/
+          name: cognitive-skill-scorer-packets-${{ github.run_id }}
+          path: artifacts/cognitive-skill-battery/${{ github.run_id }}/*/scorer/
           if-no-files-found: error
           retention-days: 30
       - name: Upload private controller material and Q-Batch evidence
         uses: actions/upload-artifact@v4
         with:
-          name: cognitive-skill-controller-and-evidence
+          name: cognitive-skill-controller-and-evidence-${{ github.run_id }}
           path: |
-            artifacts/cognitive-skill-battery/index.json
-            artifacts/cognitive-skill-battery/*/controller/
-            artifacts/cognitive-skill-battery/*/experiment/
+            artifacts/cognitive-skill-battery/${{ github.run_id }}/index.json
+            artifacts/cognitive-skill-battery/${{ github.run_id }}/*/controller/
+            artifacts/cognitive-skill-battery/${{ github.run_id }}/*/experiment/
           if-no-files-found: error
           retention-days: 30
