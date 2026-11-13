@@ -42,6 +42,9 @@ class IndependentEvaluationTests(unittest.TestCase):
         spec_path = self._write(folder, "spec.json", spec)
         rubric_path = self._write(folder, "rubric.json", rubric)
         packet_path, key_path = folder / "scorer" / "packet.json", folder / "controller" / "blind-key.json"
+        condition_key_path = folder / "controller" / "condition-key.json"
+        condition_key_path.parent.mkdir(parents=True, exist_ok=True)
+        condition_key_path.write_text(json.dumps({"A": "baseline", "B": "skill-enabled"}))
         export_blinded_packet(report_path, spec_path, packet_path, key_path)
         packet = json.loads(packet_path.read_text())
         key = json.loads(key_path.read_text())
@@ -71,8 +74,8 @@ class IndependentEvaluationTests(unittest.TestCase):
             self.assertNotIn("skill", json.dumps(packet).lower())
             result = evaluate_report(report, rubric, scores, key_path)
         self.assertEqual(result["scoring_method"], "EXTERNAL_BLINDED_SCORES_ONLY")
-        self.assertEqual(result["criteria"]["accuracy"]["mean_paired_delta_B_minus_A"], 1.0)
-        self.assertEqual(result["criteria"]["clarity"]["mean_paired_delta_B_minus_A"], 2.0)
+        self.assertEqual(result["criteria"]["accuracy"]["mean_paired_delta_skill_minus_baseline"], 1.0)
+        self.assertEqual(result["criteria"]["clarity"]["mean_paired_delta_skill_minus_baseline"], 2.0)
         self.assertEqual(len(result["paired_results"]), 2)
 
     def test_rejects_missing_blind_score(self) -> None:
