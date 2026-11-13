@@ -118,6 +118,10 @@ def evaluate_report(report_path: str | Path, rubric_path: str | Path,
         missing = sorted(set(expected_runs) - set(by_run))
         raise EvaluationError(f"missing scores for runs: {', '.join(missing)}")
 
+    condition_key = blind_key.get("condition_key")
+    if not isinstance(condition_key, dict) or set(condition_key.values()) != {"baseline", "skill-enabled"}:
+        raise EvaluationError("private key must map A/B labels to baseline and skill-enabled")
+    condition_label = {condition_id: label for label, condition_id in condition_key.items()}
     grouped: dict[tuple[str, int], dict[str, str]] = {}
     for run_id, run in expected_runs.items():
         key = (run["task_id"], run["trial"])
@@ -126,27 +130,34 @@ def evaluate_report(report_path: str | Path, rubric_path: str | Path,
     for (task_id, trial), pair in sorted(grouped.items()):
         if set(pair) != {"A", "B"}:
             raise EvaluationError(f"task {task_id} trial {trial} is not a complete A/B pair")
+        baseline_run = pair[condition_label["baseline"]]
+        skill_run = pair[condition_label["skill-enabled"]]
         pairs.append({
             "task_id": task_id, "trial": trial,
-            "scores_A": by_run[pair["A"]], "scores_B": by_run[pair["B"]],
-            "delta_B_minus_A": {key: by_run[pair["B"]][key] - by_run[pair["A"]][key] for key in criterion_ids},
+            "scores_baseline": by_run[baseline_run],
+            "scores_skill_enabled": by_run[skill_run],
+            "delta_skill_minus_baseline": {
+                key: by_run[skill_run][key] - by_run[baseline_run][key] for key in criterion_ids
+            },
         })
     summaries = {}
     for criterion_id in criterion_ids:
-        values_a = [by_run[run_id][criterion_id] for run_id, run in expected_runs.items() if run["condition_label"] == "A"]
-        values_b = [by_run[run_id][criterion_id] for run_id, run in expected_runs.items() if run["condition_label"] == "B"]
-        deltas = [pair["delta_B_minus_A"][criterion_id] for pair in pairs]
+        baseline_label = condition_label["baseline"]
+        skill_label = condition_label["skill-enabled"]
+        values_baseline = [by_run[run_id][criterion_id] for run_id, run in expected_runs.items() if run["condition_label"] == baseline_label]
+        values_skill = [by_run[run_id][criterion_id] for run_id, run in expected_runs.items() if run["condition_label"] == skill_label]
+        deltas = [pair["delta_skill_minus_baseline"][criterion_id] for pair in pairs]
         summaries[criterion_id] = {
-            "mean_A": sum(values_a) / len(values_a),
-            "mean_B": sum(values_b) / len(values_b),
-            "mean_paired_delta_B_minus_A": sum(deltas) / len(deltas),
+            "mean_baseline": sum(values_baseline) / len(values_baseline),
+            "mean_skill_enabled": sum(values_skill) / len(values_skill),
+            "mean_paired_delta_skill_minus_baseline": sum(deltas) / len(deltas),
             "paired_observations": len(deltas),
         }
     return {
         "evaluation_version": "1.0", "experiment_id": report["experiment_id"],
         "report_spec_sha256": report["spec_sha256"], "rubric_sha256": _sha256(rubric),
         "evaluator_id": score_doc["evaluator_id"], "scoring_method": "EXTERNAL_BLINDED_SCORES_ONLY",
-        "blind_key_sha256": _sha256(blind_key),
+        "blind_key_sha256": _sha256(blind_key),\n        "revealed_condition_mapping": condition_key,
         "interpretation": "Descriptive paired score differences only; no statistical significance or causal claim is inferred.",
         "criteria": summaries, "paired_results": pairs,
     }
