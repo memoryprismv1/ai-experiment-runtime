@@ -67,7 +67,7 @@ def export_blinded_packet(report_path: str | Path, spec_path: str | Path,
     if any(labels != {"A", "B"} for labels in groups.values()):
         raise BlindingError("report contains an incomplete A/B pair")
 
-    run_root = Path(report_path).resolve().parent.parent
+    report_file = Path(report_path).resolve()\n    run_root = report_file.parent.parent if report_file.parent.name == "reports" else report_file.parent
     condition_key_path = run_root / "controller" / "condition-key.json"
     condition_key = _read(condition_key_path)
     if set(condition_key) != {"A", "B"} or set(condition_key.values()) != {"baseline", "skill-enabled"}:
