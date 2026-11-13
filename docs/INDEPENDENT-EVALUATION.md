@@ -20,7 +20,7 @@ aier blind-export \
   --private-key controller/blind-key.json
 ```
 
-Share only `scoring-packet.json` and the rubric with the evaluator. Never share `blind-key.json` or raw Q-Batch run directories with the scorer. The packet shuffles sample order and replaces run IDs with random opaque IDs.
+Share only `scoring-packet.json` and the rubric with the evaluator. Never share `blind-key.json` or raw Q-Batch run directories with the scorer. The packet shuffles sample order and replaces run IDs with random opaque IDs. The battery runner also randomises which A/B label is assigned to baseline and skill-enabled for each experiment; that mapping stays in the private controller key.
 
 ## Rubric format
 
@@ -70,6 +70,6 @@ aier evaluate \
   --output evaluation.json
 ```
 
-Every completed run must have exactly one score for every rubric criterion. Duplicate, missing, unknown, non-finite, or out-of-range scores are rejected. The evaluation output reports per-condition means and paired B-minus-A differences by criterion.
+Every completed run must have exactly one score for every rubric criterion. Duplicate, missing, unknown, non-finite, or out-of-range scores are rejected. The evaluation output reveals the condition mapping only after scoring and reports baseline/skill-enabled means plus paired skill-minus-baseline differences by criterion.
 
 These are descriptive summaries. The runtime does not calculate significance, confidence intervals, or causal effects. Repeated trials are not automatically independent samples, and evaluator agreement/reliability must be handled by the evaluation protocol.
