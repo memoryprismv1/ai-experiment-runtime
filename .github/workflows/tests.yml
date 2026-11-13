@@ -1,0 +1,62 @@
+name: Runtime and Q-Batch verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    steps:
+      - name: Check out runtime
+        uses: actions/checkout@v4
+      - name: Check out the pinned Q-Batch verifier
+        uses: actions/checkout@v4
+        with:
+          repository: memoryprismv1/q-batch-of-evidence
+          ref: c059f5d5f969edcc7a87e7e288956a39c945cdc8
+          path: qbatch
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile runtime
+        run: python -m compileall -q src tests setup_environment.py
+      - name: Run runtime unit and Q-Batch integration tests
+        env:
+          PYTHONPATH: src
+          Q_BATCH_PATH: ${{ github.workspace }}/qbatch
+        run: python -m unittest discover -s tests -v
+      - name: Run Q-Batch logger regression tests
+        working-directory: qbatch
+        run: python -m unittest discover -s tests -v
+      - name: Run Q-Batch paired logging tests
+        working-directory: qbatch
+        run: python -m unittest experiments.ct_ab.test_logging experiments.ct_ab.test_pair_runner -v
+      - name: Run Q-Batch deterministic methodology demonstration tests
+        working-directory: qbatch
+        run: python -m unittest experiments.ct_ab.test_method_demo -v
+      - name: Execute runtime synthetic pair through Q-Batch
+        env:
+          PYTHONPATH: src
+          Q_BATCH_PATH: ${{ github.workspace }}/qbatch
+        run: python -m ai_experiment_runtime run --spec examples/deterministic-pair.json --output "$RUNNER_TEMP/ai-experiment-runtime-smoke" --qbatch-path "$Q_BATCH_PATH"
+      - name: Preserve synthetic verification report
+        if: matrix.python-version == '3.13'
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-qbatch-smoke-report
+          path: ${{ runner.temp }}/ai-experiment-runtime-smoke/reports/batch-report.json
+          if-no-files-found: error
+          retention-days: 14
