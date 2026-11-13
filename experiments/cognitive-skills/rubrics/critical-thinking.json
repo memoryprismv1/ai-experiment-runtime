@@ -1,0 +1,50 @@
+{
+  "skill_id": "critical-thinking",
+  "skill_revision": "fc530b6815eead24aa8655cbbb4bfe0dd8c9f666",
+  "criteria": [
+    {
+      "id": "curiosity_preserved",
+      "description": "Follows the actual question rather than replacing it with an easier one",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "alternative_explanations",
+      "description": "Develops plausible competing explanations",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "evidence_discipline",
+      "description": "Separates observation, inference, speculation and established fact",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "reconciliation",
+      "description": "Identifies discriminating evidence and leaves unresolved issues open",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    }
+  ]
+}
