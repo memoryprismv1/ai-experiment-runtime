@@ -96,9 +96,7 @@ def export_blinded_packet(report_path: str | Path, spec_path: str | Path,
         raise BlindingError("scoring packet and private key must be different files")
     packet_target.parent.mkdir(parents=True, exist_ok=True)
     key_target.parent.mkdir(parents=True, exist_ok=True)
-    packet_target.write_text(json.dumps(packet, indent=2, ensure_ascii=False) + "
-", encoding="utf-8")
-    key_target.write_text(json.dumps(key, indent=2, ensure_ascii=False) + "
-", encoding="utf-8")
+    packet_target.write_text(json.dumps(packet, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    key_target.write_text(json.dumps(key, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return {"experiment_id": report["experiment_id"], "samples": len(packet_samples),
             "packet_path": str(packet_target), "private_key_path": str(key_target)}
