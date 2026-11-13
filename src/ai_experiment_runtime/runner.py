@@ -156,6 +156,8 @@ def run_experiment(spec_path: str | Path, output: str | Path, qbatch_path: str |
     (root / "reports").mkdir()
 
     results: list[dict[str, Any]] = []
+    total_trials = len(experiment.tasks) * experiment.trials_per_task * len(experiment.conditions)
+    completed_attempts = 0
     randomization_seed = experiment.random_seed if experiment.random_seed is not None else secrets.randbits(64)
     randomizer = random.Random(randomization_seed)
     for task in experiment.tasks:
@@ -165,7 +167,18 @@ def run_experiment(spec_path: str | Path, output: str | Path, qbatch_path: str |
             run_order = list(experiment.conditions)
             randomizer.shuffle(run_order)
             for order_index, condition in enumerate(run_order, start=1):
-                results.append(_run_one(experiment, condition, task, trial, root, qbatch_path, order_index, randomization_seed))
+                completed_attempts += 1
+                print(
+                    f"[{completed_attempts}/{total_trials}] START condition={condition.label} task={task['id']} trial={trial}",
+                    flush=True,
+                )
+                trial_result = _run_one(experiment, condition, task, trial, root, qbatch_path, order_index, randomization_seed)
+                results.append(trial_result)
+                print(
+                    f"[{completed_attempts}/{total_trials}] {trial_result['status']} condition={condition.label} task={task['id']} trial={trial}"
+                    + (f" latency_ms={trial_result.get('latency_ms')}" if trial_result.get("latency_ms") is not None else ""),
+                    flush=True,
+                )
 
     _, _, validators = load_qbatch(qbatch_path)
     validate_run, validate_pair = validators
