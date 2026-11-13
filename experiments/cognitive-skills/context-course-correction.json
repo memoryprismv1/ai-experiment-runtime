@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "cognitive-context-course-correction",
+  "title": "Context Course Correction: baseline vs canonical skill",
+  "description": "Paired skill evaluation. Canonical skill source revision: fc530b6815eead24aa8655cbbb4bfe0dd8c9f666. Baseline A versus skill-loaded B. Outputs require independent blinded scoring; Q-Batch verifies instrumentation only.",
+  "provider": {
+    "type": "openai-compatible",
+    "base_url": "https://api.openai.com/v1",
+    "model": "REPLACE_WITH_MODEL_ID",
+    "temperature": 0,
+    "max_tokens": 1800,
+    "timeout_seconds": 180,
+    "api_key_env": "AI_RUNTIME_API_KEY"
+  },
+  "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
+  "tasks": [
+    {
+      "id": "changed-constraint",
+      "prompt": "Transcript: User: 'Build a dashboard that compares all five services.' Assistant: 'I'll design a single dashboard with five panels.' User: 'Correction: the services run in separate networks and cannot share data. The dashboard must not aggregate their data.' Respond with the next plan. The correction changes the architecture, not just a detail."
+    },
+    {
+      "id": "wrong-object-fixation",
+      "prompt": "Transcript: User: 'The export is missing records.' Assistant: 'I'll inspect the CSV formatting.' User: 'The CSV is complete. The records disappear only after import into the target system.' Identify where the investigation should move and what prior assumption must be dropped."
+    },
+    {
+      "id": "late-requirement",
+      "prompt": "Transcript: User: 'Create a migration plan for the database.' Assistant: 'Step 1: migrate all tables in one maintenance window.' User: 'We cannot have downtime, and two legacy clients cannot be updated this quarter.' Produce a revised next step that incorporates both constraints and does not continue the old plan."
+    }
+  ],
+  "conditions": [
+    {
+      "id": "baseline",
+      "label": "A",
+      "system_instruction": "No experimental skill resource is loaded. Follow only the shared system prompt and task."
+    },
+    {
+      "id": "skill-enabled",
+      "label": "B",
+      "resources": [
+        {
+          "name": "context-course-correction",
+          "path": "../../.vendor/cognitive-interface-ai-skills/context-course-correction/SKILL.md"
+        }
+      ]
+    }
+  ],
+  "trials_per_task": 2,
+  "random_seed": 20261113
+}
