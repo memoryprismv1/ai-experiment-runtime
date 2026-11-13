@@ -15,8 +15,8 @@
   "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
   "tasks": [
     {
-      "id": "distinct-architecture-options",
-      "prompt": "Design a backup strategy for a small organisation with intermittent internet, limited staff and a strict recovery-time requirement. Explore materially different architectures, not cosmetic variations. Explain trade-offs and keep the decision with the user."
+      "id": "room-cooling",
+      "prompt": "How could someone reduce heat in a room without installing air-conditioning? Develop materially different routes that intervene at different points in the heat balance. Explain trade-offs, show which routes can be combined, and do not force a choice."
     },
     {
       "id": "avoid-premature-convergence",
