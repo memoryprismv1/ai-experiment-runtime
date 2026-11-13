@@ -1,0 +1,71 @@
+name: Real cognitive-skill A/B battery
+
+on:
+  workflow_dispatch:
+    inputs:
+      skills:
+        description: "Space-separated skill IDs; leave blank to run all ten"
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  run-battery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - name: Check out runtime
+        uses: actions/checkout@v4
+      - name: Check out pinned Q-Batch verifier
+        uses: actions/checkout@v4
+        with:
+          repository: memoryprismv1/q-batch-of-evidence
+          ref: c059f5d5f969edcc7a87e7e288956a39c945cdc8
+          path: .vendor/q-batch-of-evidence
+      - name: Check out pinned cognitive skills (read-only test subjects)
+        uses: actions/checkout@v4
+        with:
+          repository: memoryprismv1/cognitive-interface-ai-skills
+          ref: fc530b6815eead24aa8655cbbb4bfe0dd8c9f666
+          path: .vendor/cognitive-interface-ai-skills
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare runtime environment
+        run: python setup_environment.py
+      - name: Run real-model cognitive-skill experiments
+        env:
+          AI_RUNTIME_API_KEY: ${{ secrets.AI_RUNTIME_API_KEY }}
+        shell: bash
+        run: |
+          if [[ -z "${AI_RUNTIME_API_KEY}" ]]; then
+            echo "::error::Repository secret AI_RUNTIME_API_KEY is missing."
+            exit 1
+          fi
+          if [[ -n "${{ inputs.skills }}" ]]; then
+            read -r -a selected_skills <<< "${{ inputs.skills }}"
+            .venv/bin/python scripts/run_cognitive_skill_battery.py --skills "${selected_skills[@]}"
+          else
+            .venv/bin/python scripts/run_cognitive_skill_battery.py
+          fi
+      - name: Upload blinded scorer packets
+        uses: actions/upload-artifact@v4
+        with:
+          name: cognitive-skill-scorer-packets
+          path: artifacts/cognitive-skill-battery/*/scorer/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload private controller material and Q-Batch evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: cognitive-skill-controller-and-evidence
+          path: |
+            artifacts/cognitive-skill-battery/index.json
+            artifacts/cognitive-skill-battery/*/controller/
+            artifacts/cognitive-skill-battery/*/experiment/
+          if-no-files-found: error
+          retention-days: 30
