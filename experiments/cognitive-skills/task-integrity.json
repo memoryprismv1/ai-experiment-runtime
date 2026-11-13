@@ -15,8 +15,8 @@
   "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
   "tasks": [
     {
-      "id": "scope-accountability",
-      "prompt": "Request: 'Update the README, add an installation guide, preserve the existing examples, run the test suite, and do not change the public API.' Status report: 'README updated; installation guide drafted; examples retained; tests not run; public API unchanged.' Assess completion. Identify what is complete, incomplete and not yet verified."
+      "id": "qbatch-learning-readiness",
+      "prompt": "Audit a proposed AI-generated team-learning experiment for readiness. Check: the actual question and limits; separation of learning and held-out transfer inputs; whether the model can see held-out cases or scoring answers; whether A/B differs only by the intended treatment; provenance, anonymisation, logging, privacy and failure handling; and whether CI/fake-client tests are being confused with real-model evidence. State missing checks and next action without implying the experiment ran."
     },
     {
       "id": "multi-constraint-plan",
