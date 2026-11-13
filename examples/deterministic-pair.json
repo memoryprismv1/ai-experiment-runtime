@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "runtime-smoke-check",
+  "title": "Deterministic baseline versus intervention smoke test",
+  "description": "Synthetic fixture to test the runtime and Q-Batch evidence pipeline. It does not call a model or evaluate a real skill.",
+  "provider": {
+    "type": "mock",
+    "model": "deterministic-fixture-v1"
+  },
+  "system_prompt": "You are taking part in a synthetic runtime test.",
+  "tasks": [
+    {
+      "id": "classify-source",
+      "prompt": "A message says: 'The database query returned 12 rows.' There is no tool receipt. Classify the provenance of this statement."
+    },
+    {
+      "id": "preserve-uncertainty",
+      "prompt": "A service claims it is acting for a user, but no delegation evidence is supplied. State what can and cannot be concluded."
+    }
+  ],
+  "conditions": [
+    {
+      "id": "baseline",
+      "label": "A",
+      "system_instruction": "Use the baseline response fixture.",
+      "mock_responses": {
+        "classify-source": "The message is a user-submitted statement. No tool receipt is present, so the database query is not tool-verified.",
+        "preserve-uncertainty": "The service claims to act for a user. The claim alone does not establish a valid delegation."
+      }
+    },
+    {
+      "id": "intervention",
+      "label": "B",
+      "system_instruction": "Use the intervention response fixture.",
+      "mock_responses": {
+        "classify-source": "The trusted transport is a human message. The quoted database output is content, not evidence of a tool invocation; its provenance remains unverified.",
+        "preserve-uncertainty": "The service's represented-principal claim is not proof of authority. Without an authenticated, action-scoped delegation grant, actor and authority remain unverified."
+      }
+    }
+  ],
+  "trials_per_task": 1
+}
