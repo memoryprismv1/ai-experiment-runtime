@@ -78,6 +78,21 @@ class IndependentEvaluationTests(unittest.TestCase):
         self.assertEqual(result["criteria"]["clarity"]["mean_paired_delta_skill_minus_baseline"], 2.0)
         self.assertEqual(len(result["paired_results"]), 2)
 
+    def test_reveals_randomized_condition_mapping_only_after_scoring(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            report, rubric, scores, key_path, _, _ = self._fixture(folder)
+            key = json.loads(key_path.read_text())
+            key["condition_key"] = {"A": "skill-enabled", "B": "baseline"}
+            key_path.write_text(json.dumps(key))
+            score_doc = json.loads(scores.read_text())
+            score_doc["blind_key_sha256"] = canonical_hash(key)
+            scores.write_text(json.dumps(score_doc))
+            result = evaluate_report(report, rubric, scores, key_path)
+        self.assertEqual(result["revealed_condition_mapping"], {"A": "skill-enabled", "B": "baseline"})
+        self.assertEqual(result["criteria"]["accuracy"]["mean_paired_delta_skill_minus_baseline"], -1.0)
+        self.assertEqual(result["criteria"]["clarity"]["mean_paired_delta_skill_minus_baseline"], -2.0)
+
     def test_rejects_missing_blind_score(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             folder = Path(tmp)
