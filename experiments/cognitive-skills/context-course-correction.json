@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "experiment_id": "cognitive-context-course-correction",
-  "title": "Context Course Correction: baseline vs canonical skill",
-  "description": "Paired skill evaluation. Canonical skill source revision: fc530b6815eead24aa8655cbbb4bfe0dd8c9f666. Baseline A versus skill-loaded B. Outputs require independent blinded scoring; Q-Batch verifies instrumentation only.",
+  "title": "Context Course Correction: staged transcript-replay simulation",
+  "description": "Controlled staged transcript-replay simulation of context updates and trajectory correction. Each probe supplies a conversation state and a new signal; the model must decide whether to preserve, revise, or abandon its current trajectory. This tests observable response behaviour, not hidden token-level monitoring or true runtime interruption. Baseline A versus canonical skill-loaded B. Q-Batch verifies evidence integrity only.",
   "provider": {
     "type": "openai-compatible",
     "base_url": "https://api.openai.com/v1",
@@ -25,6 +25,18 @@
     {
       "id": "late-requirement",
       "prompt": "Transcript: User: 'Create a migration plan for the database.' Assistant: 'Step 1: migrate all tables in one maintenance window.' User: 'We cannot have downtime, and two legacy clients cannot be updated this quarter.' Produce a revised next step that incorporates both constraints and does not continue the old plan."
+    },
+    {
+      "id": "false-positive-no-change",
+      "prompt": "Transcript: User: 'We need a service that imports daily CSV files and validates them.' Assistant: 'I'll propose a scheduled import job with schema validation and a quarantine folder for invalid rows.' User: 'The files will arrive at 02:00 UTC, and the database is already available at that time.' Respond with the next step. The new information may or may not change the plan. Do not invent a problem or redesign sound parts."
+    },
+    {
+      "id": "scope-drift-return",
+      "prompt": "Transcript: User: 'Help me diagnose why customer records disappear after import.' Assistant: 'We should trace the import pipeline from source file through parsing, validation, and persistence.' User: 'By the way, the UI redesign is also overdue.' Assistant: 'We could redesign the customer page while we're investigating.' User: 'No. Stay with the missing records. The UI is unrelated.' Respond with the next step. Identify what should be dropped and continue the original investigation."
+    },
+    {
+      "id": "contradictory-evidence",
+      "prompt": "Transcript: User: 'The API is slow, so I think the database is overloaded.' Assistant: 'I'll start by tuning database indexes.' User: 'I measured it. Database queries take 8 ms; the request spends 1.8 seconds waiting on a third-party geocoding API.' Respond with the next diagnostic plan. Identify the earliest unsupported assumption, preserve any still-valid work, and redirect the investigation."
     }
   ],
   "conditions": [
