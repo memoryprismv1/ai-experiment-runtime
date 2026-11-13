@@ -40,14 +40,15 @@ jobs:
       - name: Run real-model cognitive-skill experiments
         env:
           AI_RUNTIME_API_KEY: ${{ secrets.AI_RUNTIME_API_KEY }}
+          SKILLS_INPUT: ${{ inputs.skills }}
         shell: bash
         run: |
           if [[ -z "${AI_RUNTIME_API_KEY}" ]]; then
             echo "::error::Repository secret AI_RUNTIME_API_KEY is missing."
             exit 1
           fi
-          if [[ -n "${{ inputs.skills }}" ]]; then
-            read -r -a selected_skills <<< "${{ inputs.skills }}"
+          if [[ -n "${SKILLS_INPUT}" ]]; then
+            read -r -a selected_skills <<< "${SKILLS_INPUT}"
             .venv/bin/python scripts/run_cognitive_skill_battery.py --skills "${selected_skills[@]}"
           else
             .venv/bin/python scripts/run_cognitive_skill_battery.py
