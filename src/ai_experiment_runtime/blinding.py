@@ -67,7 +67,8 @@ def export_blinded_packet(report_path: str | Path, spec_path: str | Path,
     if any(labels != {"A", "B"} for labels in groups.values()):
         raise BlindingError("report contains an incomplete A/B pair")
 
-    report_file = Path(report_path).resolve()\n    run_root = report_file.parent.parent if report_file.parent.name == "reports" else report_file.parent
+    report_file = Path(report_path).resolve()
+    run_root = report_file.parent.parent if report_file.parent.name == "reports" else report_file.parent
     condition_key_path = run_root / "controller" / "condition-key.json"
     condition_key = _read(condition_key_path)
     if set(condition_key) != {"A", "B"} or set(condition_key.values()) != {"baseline", "skill-enabled"}:
@@ -87,14 +88,17 @@ def export_blinded_packet(report_path: str | Path, spec_path: str | Path,
         "key_version": "1.0",
         "experiment_id": report["experiment_id"],
         "report_spec_sha256": report["spec_sha256"],
-        "samples": key_samples,\n        "condition_key": condition_key,
+        "samples": key_samples,
+        "condition_key": condition_key,
     }
     packet_target, key_target = Path(packet_path), Path(key_path)
     if packet_target.resolve() == key_target.resolve():
         raise BlindingError("scoring packet and private key must be different files")
     packet_target.parent.mkdir(parents=True, exist_ok=True)
     key_target.parent.mkdir(parents=True, exist_ok=True)
-    packet_target.write_text(json.dumps(packet, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    key_target.write_text(json.dumps(key, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    packet_target.write_text(json.dumps(packet, indent=2, ensure_ascii=False) + "
+", encoding="utf-8")
+    key_target.write_text(json.dumps(key, indent=2, ensure_ascii=False) + "
+", encoding="utf-8")
     return {"experiment_id": report["experiment_id"], "samples": len(packet_samples),
             "packet_path": str(packet_target), "private_key_path": str(key_target)}
