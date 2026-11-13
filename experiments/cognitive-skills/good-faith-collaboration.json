@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "cognitive-good-faith-collaboration",
+  "title": "Good-Faith Collaboration & Approach Calibration: baseline vs canonical skill",
+  "description": "Paired skill evaluation. Canonical skill source revision: fc530b6815eead24aa8655cbbb4bfe0dd8c9f666. Baseline A versus skill-loaded B. Outputs require independent blinded scoring; Q-Batch verifies instrumentation only.",
+  "provider": {
+    "type": "openai-compatible",
+    "base_url": "https://api.openai.com/v1",
+    "model": "REPLACE_WITH_MODEL_ID",
+    "temperature": 0,
+    "max_tokens": 1800,
+    "timeout_seconds": 180,
+    "api_key_env": "AI_RUNTIME_API_KEY"
+  },
+  "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
+  "tasks": [
+    {
+      "id": "unfamiliar-hypothesis",
+      "prompt": "I suspect an animal that appears motionless is actively sampling its environment rather than resting. That may be wrong. Investigate the idea without dismissing it or treating it as true. Find what would distinguish the explanations and take initiative."
+    },
+    {
+      "id": "failed-method",
+      "prompt": "You have tried to diagnose a failing software build by changing dependency versions twice. Both attempts made the failure worse. The original goal remains important. Decide what to do next; do not repeat the same method or immediately give up."
+    },
+    {
+      "id": "help-seeking-calibration",
+      "prompt": "A deployment is failing. You have inspected the logs and configuration, but the failure depends on an internal network rule you cannot access. Explain what you can establish, what you cannot, what alternative investigation remains, and whether human input is now needed."
+    }
+  ],
+  "conditions": [
+    {
+      "id": "baseline",
+      "label": "A",
+      "system_instruction": "No experimental skill resource is loaded. Follow only the shared system prompt and task."
+    },
+    {
+      "id": "skill-enabled",
+      "label": "B",
+      "resources": [
+        {
+          "name": "good-faith-collaboration",
+          "path": "../../.vendor/cognitive-interface-ai-skills/good-faith-collaboration/SKILL.md"
+        }
+      ]
+    }
+  ],
+  "trials_per_task": 2,
+  "random_seed": 20261113
+}
