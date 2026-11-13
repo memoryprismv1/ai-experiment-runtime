@@ -19,7 +19,7 @@ Pinned source revision: `fc530b6815eead24aa8655cbbb4bfe0dd8c9f666`.
 
 Each skill has its own experiment spec and predeclared rubric. Each spec uses the same model and shared system prompt in both conditions, with the canonical `SKILL.md` loaded only in the intervention condition. The task set contains three probes per skill, repeated twice: 12 model responses per skill, 120 responses across the full battery.
 
-The tasks are behaviour probes, not a test of whether a model can recite the skill. Multi-turn failure modes are represented as frozen transcripts in a single prompt because runtime v1 currently makes one model request per trial. That is a limitation: these probes test response to supplied trajectory changes, not continuous online monitoring during a live conversation.
+The battery runner randomly assigns the intervention to A or B for each skill experiment; the mapping is retained only in the private controller key. The scorer receives shuffled opaque sample IDs, task prompts and responses, not the condition label or skill resource. The tasks are behaviour probes, not a test of whether a model can recite the skill. Multi-turn failure modes are represented as frozen transcripts in a single prompt because runtime v1 currently makes one model request per trial. That is a limitation: these probes test response to supplied trajectory changes, not continuous online monitoring during a live conversation.
 
 ## Run
 
