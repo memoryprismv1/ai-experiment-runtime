@@ -69,7 +69,7 @@ python -m ai_experiment_runtime run --spec ./my-experiment.json --output ./priva
 
 The output contains raw prompts and responses, including condition resources. It must be handled as private experimental evidence even when the source repository is public. Do not upload real prompts, private data, model traces, or condition keys to a public repository or public Actions artifacts.
 
-For a local Ollama OpenAI-compatible endpoint, a provider block can use `http://127.0.0.1:11434/v1` and a locally installed model name. The runtime does not install or download models.
+For a local Ollama OpenAI-compatible endpoint, a provider block can use `http://127.0.0.1:11434/v1` and a locally installed model name. The runtime does not install or download models. The cognitive-skill battery defaults to this credential-free route: GitHub Actions installs Ollama, pulls `qwen2.5:7b`, and runs one selected skill per selector-file change. This avoids OpenAI API billing; GitHub Actions execution and model download quotas still apply.
 
 ## Output layout
 
