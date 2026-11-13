@@ -9,7 +9,9 @@
       "max_score": 4,
       "anchors": {
         "0": "Absent, materially incorrect, or counterproductive",
+        "1": "Weak or inconsistent; major gaps remain",
         "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "3": "Mostly demonstrated; only minor gaps remain",
         "4": "Clearly and consistently demonstrated with no material omission"
       }
     },
@@ -20,7 +22,9 @@
       "max_score": 4,
       "anchors": {
         "0": "Absent, materially incorrect, or counterproductive",
+        "1": "Weak or inconsistent; major gaps remain",
         "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "3": "Mostly demonstrated; only minor gaps remain",
         "4": "Clearly and consistently demonstrated with no material omission"
       }
     },
@@ -31,7 +35,9 @@
       "max_score": 4,
       "anchors": {
         "0": "Absent, materially incorrect, or counterproductive",
+        "1": "Weak or inconsistent; major gaps remain",
         "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "3": "Mostly demonstrated; only minor gaps remain",
         "4": "Clearly and consistently demonstrated with no material omission"
       }
     },
@@ -42,7 +48,9 @@
       "max_score": 4,
       "anchors": {
         "0": "Absent, materially incorrect, or counterproductive",
+        "1": "Weak or inconsistent; major gaps remain",
         "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "3": "Mostly demonstrated; only minor gaps remain",
         "4": "Clearly and consistently demonstrated with no material omission"
       }
     }
