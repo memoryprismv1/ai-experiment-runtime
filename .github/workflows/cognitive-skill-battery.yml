@@ -72,6 +72,7 @@ jobs:
           esac
           .venv/bin/python scripts/run_cognitive_skill_battery.py --skills "${SKILL_ID}" --output "${RUN_OUTPUT}"
       - name: Upload blinded scorer packets
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: cognitive-skill-scorer-packets-${{ github.run_id }}
@@ -79,6 +80,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Upload private controller material and Q-Batch evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cognitive-skill-controller-and-evidence-${{ github.run_id }}
