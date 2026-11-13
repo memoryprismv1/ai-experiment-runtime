@@ -64,7 +64,7 @@ jobs:
             sleep 2
           done
           curl -fsS http://127.0.0.1:11434/api/tags >/dev/null || { cat /tmp/ollama.log; exit 1; }
-          ollama pull qwen2.5:7b
+          ollama pull qwen2.5:3b
       - name: Run local-model cognitive-skill experiments
         env:
           RUN_OUTPUT: artifacts/cognitive-skill-battery/${{ github.run_id }}
@@ -79,7 +79,7 @@ jobs:
             automaticity|a-touch-of-grace|critical-thinking|context-course-correction|good-faith-collaboration|peer-review|optionality|software-literacy|task-integrity|verification-integrity) ;;
             *) echo "::error::Select exactly one supported skill."; exit 1 ;;
           esac
-          .venv/bin/python scripts/run_cognitive_skill_battery.py --skills "${SKILL_ID}" --output "${RUN_OUTPUT}" --model qwen2.5:7b --base-url http://127.0.0.1:11434/v1
+          .venv/bin/python scripts/run_cognitive_skill_battery.py --skills "${SKILL_ID}" --output "${RUN_OUTPUT}" --model qwen2.5:3b --base-url http://127.0.0.1:11434/v1
       - name: Upload blinded scorer packets
         if: success()
         uses: actions/upload-artifact@v4
