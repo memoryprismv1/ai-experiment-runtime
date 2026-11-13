@@ -15,12 +15,12 @@
   "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
   "tasks": [
     {
-      "id": "novice-decision",
-      "prompt": "I want a simple appointment booking app. I don't know software terminology and I don't want a programming course. Explain the first practical decisions and introduce only concepts that matter now."
+      "id": "contact-form",
+      "prompt": "A person wants a simple contact form on a small website. They do not know software terminology and do not want a programming course. Explain the few decisions that matter before implementation: where messages go, spam handling, privacy, failure handling and whether a backend or hosted form service is needed. Explain technical terms when they become relevant."
     },
     {
-      "id": "shared-component-risk",
-      "prompt": "You propose changing a shared authentication component to fix one page. Explain what this component does, what else may depend on it, the consequences and what you would inspect before changing it. Keep the explanation understandable without hiding the real technical terms."
+      "id": "qbatch-dependency-tradeoffs",
+      "prompt": "A software project uses Q-Batch as a separate repository dependency. The team is considering copying its verifier code into the runtime to simplify setup. Explain what a dependency is, what copying changes, and the trade-offs for updates, provenance, maintenance and independent verification. Recommend a path with reasons."
     },
     {
       "id": "verification-distinction",
