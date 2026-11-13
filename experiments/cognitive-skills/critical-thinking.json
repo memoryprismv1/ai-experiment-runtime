@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "cognitive-critical-thinking",
+  "title": "Critical Thinking: baseline vs canonical skill",
+  "description": "Paired skill evaluation. Canonical skill source revision: fc530b6815eead24aa8655cbbb4bfe0dd8c9f666. Baseline A versus skill-loaded B. Outputs require independent blinded scoring; Q-Batch verifies instrumentation only.",
+  "provider": {
+    "type": "openai-compatible",
+    "base_url": "https://api.openai.com/v1",
+    "model": "REPLACE_WITH_MODEL_ID",
+    "temperature": 0,
+    "max_tokens": 1800,
+    "timeout_seconds": 180,
+    "api_key_env": "AI_RUNTIME_API_KEY"
+  },
+  "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
+  "tasks": [
+    {
+      "id": "unexpected-observation",
+      "prompt": "I noticed a small flower that looks as if it has a transparent window. Someone says it is just a lighting effect. Investigate the possibilities. Do not assume either explanation. What observations and existing knowledge would help distinguish them?"
+    },
+    {
+      "id": "claim-mismatch",
+      "prompt": "A report says a device is 'offline', but its logs show successful authenticated requests every minute. Investigate the mismatch. Identify plausible meanings of offline, what the logs establish, and what evidence would resolve the issue."
+    },
+    {
+      "id": "causal-reconstruction",
+      "prompt": "A town's bird population fell after a new streetlight system was installed. A local report concludes the lights caused the decline. Build competing explanations, identify confounders and reconstruct what evidence would support or weaken each explanation."
+    }
+  ],
+  "conditions": [
+    {
+      "id": "baseline",
+      "label": "A",
+      "system_instruction": "No experimental skill resource is loaded. Follow only the shared system prompt and task."
+    },
+    {
+      "id": "skill-enabled",
+      "label": "B",
+      "resources": [
+        {
+          "name": "critical-thinking",
+          "path": "../../.vendor/cognitive-interface-ai-skills/critical-thinking/SKILL.md"
+        }
+      ]
+    }
+  ],
+  "trials_per_task": 2,
+  "random_seed": 20261113
+}
