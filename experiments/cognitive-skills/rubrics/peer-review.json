@@ -1,0 +1,50 @@
+{
+  "skill_id": "peer-review",
+  "skill_revision": "fc530b6815eead24aa8655cbbb4bfe0dd8c9f666",
+  "criteria": [
+    {
+      "id": "evidence_linkage",
+      "description": "Findings point to specific supplied evidence",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "issue_quality",
+      "description": "Identifies material defects and explains impact",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "provenance_and_disagreement",
+      "description": "Preserves distinct reviewers, overlap and disagreement",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "coverage_honesty",
+      "description": "Separates reviewed areas from coverage gaps and unverified claims",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    }
+  ]
+}
