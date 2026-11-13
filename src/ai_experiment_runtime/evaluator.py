@@ -1,4 +1,4 @@
-"""Independent, rubric-based evaluation of completed experiment outputs."""
+"""Independent rubric evaluation using blinded, externally supplied scores."""
 from __future__ import annotations
 
 import hashlib
@@ -27,23 +27,23 @@ def _sha256(value: Any) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
-def evaluate_report(report_path: str | Path, rubric_path: str | Path, scores_path: str | Path) -> dict[str, Any]:
-    """Score already-recorded runs using externally supplied rubric assessments.
+def evaluate_report(report_path: str | Path, rubric_path: str | Path,
+                    scores_path: str | Path, blind_key_path: str | Path) -> dict[str, Any]:
+    """Resolve blind IDs privately, then calculate descriptive paired differences.
 
-    This function never calls a model and never infers a score from the response.
-    Scores may be entered by a blinded human evaluator or imported from a separate
-    evaluation system. The evaluator must keep the A/B key concealed until scoring
-    is complete.
+    The scorer receives only the packet, rubric and opaque sample IDs. The private
+    key is retained by the experiment controller and supplied only after scoring
+    has been locked. This module never calls a model or infers scores from text.
     """
     report = _read_json(report_path)
     rubric = _read_json(rubric_path)
     score_doc = _read_json(scores_path)
+    blind_key = _read_json(blind_key_path)
 
     if report.get("status") != "PASS":
         raise EvaluationError("only a Q-Batch-verified PASS report can be evaluated")
     if report.get("classification") != "EXPERIMENT_EXECUTION_AND_QBATCH_INSTRUMENTATION_VERIFICATION_ONLY":
         raise EvaluationError("unsupported report classification")
-
     criteria = rubric.get("criteria")
     if not isinstance(criteria, list) or not criteria:
         raise EvaluationError("rubric.criteria must be a non-empty array")
@@ -67,36 +67,51 @@ def evaluate_report(report_path: str | Path, rubric_path: str | Path, scores_pat
         raise EvaluationError("report must contain completed runs only")
     if len(expected_runs) != report.get("run_count"):
         raise EvaluationError("report run_count does not match run_results")
-
-    if score_doc.get("experiment_id") != report.get("experiment_id"):
-        raise EvaluationError("scores experiment_id does not match report")
-    if score_doc.get("report_spec_sha256") != report.get("spec_sha256"):
-        raise EvaluationError("scores report_spec_sha256 does not match report")
+    if score_doc.get("experiment_id") != report.get("experiment_id") or blind_key.get("experiment_id") != report.get("experiment_id"):
+        raise EvaluationError("experiment_id does not match report")
+    if score_doc.get("report_spec_sha256") != report.get("spec_sha256") or blind_key.get("report_spec_sha256") != report.get("spec_sha256"):
+        raise EvaluationError("report specification hash does not match")
     if score_doc.get("rubric_sha256") != _sha256(rubric):
         raise EvaluationError("scores rubric_sha256 does not match the rubric")
+    if score_doc.get("blind_key_sha256") != _sha256(blind_key):
+        raise EvaluationError("scores blind_key_sha256 does not match the private key")
     if not isinstance(score_doc.get("evaluator_id"), str) or not score_doc["evaluator_id"].strip():
         raise EvaluationError("scores must identify the evaluator")
+
+    key_samples = blind_key.get("samples")
+    if not isinstance(key_samples, dict):
+        raise EvaluationError("private blind key is malformed")
+    mapped_runs: dict[str, dict[str, Any]] = {}
+    for blind_id, mapping in key_samples.items():
+        if not isinstance(mapping, dict) or mapping.get("run_id") not in expected_runs:
+            raise EvaluationError("private key references an unknown run")
+        if mapping["run_id"] in mapped_runs:
+            raise EvaluationError("private key maps multiple blind IDs to one run")
+        mapped_runs[mapping["run_id"]] = mapping
+    if set(mapped_runs) != set(expected_runs):
+        raise EvaluationError("private key does not map every run exactly once")
 
     entries = score_doc.get("scores")
     if not isinstance(entries, list):
         raise EvaluationError("scores must be an array")
     by_run: dict[str, dict[str, float]] = {}
     for entry in entries:
-        if not isinstance(entry, dict) or entry.get("run_id") not in expected_runs:
-            raise EvaluationError("score entry references an unknown run_id")
-        run_id = entry["run_id"]
+        if not isinstance(entry, dict) or entry.get("blind_id") not in key_samples:
+            raise EvaluationError("score entry references an unknown blind_id")
+        blind_id = entry["blind_id"]
+        run_id = key_samples[blind_id]["run_id"]
         if run_id in by_run:
-            raise EvaluationError(f"duplicate score entry for run: {run_id}")
+            raise EvaluationError(f"duplicate score entry for blind_id: {blind_id}")
         values = entry.get("values")
         if not isinstance(values, dict) or set(values) != set(criterion_ids):
-            raise EvaluationError(f"run {run_id} must have exactly one score for every rubric criterion")
+            raise EvaluationError(f"sample {blind_id} must have exactly one score for every rubric criterion")
         normalized: dict[str, float] = {}
         for criterion in criteria:
             value = values[criterion["id"]]
             if (not isinstance(value, (int, float)) or isinstance(value, bool)
                     or not math.isfinite(value)
                     or value < criterion["min_score"] or value > criterion["max_score"]):
-                raise EvaluationError(f"score {criterion['id']} for {run_id} is outside its permitted range")
+                raise EvaluationError(f"score {criterion['id']} for {blind_id} is outside its permitted range")
             normalized[criterion["id"]] = float(value)
         by_run[run_id] = normalized
     if set(by_run) != set(expected_runs):
@@ -112,13 +127,10 @@ def evaluate_report(report_path: str | Path, rubric_path: str | Path, scores_pat
         if set(pair) != {"A", "B"}:
             raise EvaluationError(f"task {task_id} trial {trial} is not a complete A/B pair")
         pairs.append({
-            "task_id": task_id,
-            "trial": trial,
-            "scores_A": by_run[pair["A"]],
-            "scores_B": by_run[pair["B"]],
+            "task_id": task_id, "trial": trial,
+            "scores_A": by_run[pair["A"]], "scores_B": by_run[pair["B"]],
             "delta_B_minus_A": {key: by_run[pair["B"]][key] - by_run[pair["A"]][key] for key in criterion_ids},
         })
-
     summaries = {}
     for criterion_id in criterion_ids:
         values_a = [by_run[run_id][criterion_id] for run_id, run in expected_runs.items() if run["condition_label"] == "A"]
@@ -130,15 +142,11 @@ def evaluate_report(report_path: str | Path, rubric_path: str | Path, scores_pat
             "mean_paired_delta_B_minus_A": sum(deltas) / len(deltas),
             "paired_observations": len(deltas),
         }
-
     return {
-        "evaluation_version": "1.0",
-        "experiment_id": report["experiment_id"],
-        "report_spec_sha256": report["spec_sha256"],
-        "rubric_sha256": _sha256(rubric),
-        "evaluator_id": score_doc["evaluator_id"],
-        "scoring_method": "EXTERNAL_SCORES_ONLY",
+        "evaluation_version": "1.0", "experiment_id": report["experiment_id"],
+        "report_spec_sha256": report["spec_sha256"], "rubric_sha256": _sha256(rubric),
+        "evaluator_id": score_doc["evaluator_id"], "scoring_method": "EXTERNAL_BLINDED_SCORES_ONLY",
+        "blind_key_sha256": _sha256(blind_key),
         "interpretation": "Descriptive paired score differences only; no statistical significance or causal claim is inferred.",
-        "criteria": summaries,
-        "paired_results": pairs,
+        "criteria": summaries, "paired_results": pairs,
     }
