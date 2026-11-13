@@ -1,6 +1,9 @@
 name: Real cognitive-skill A/B battery
 
 on:
+  push:
+    paths:
+      - ".github/cognitive-skill-run"
   workflow_dispatch:
     inputs:
       skill:
@@ -51,13 +54,17 @@ jobs:
       - name: Run real-model cognitive-skill experiments
         env:
           AI_RUNTIME_API_KEY: ${{ secrets.AI_RUNTIME_API_KEY }}
-          SKILL_ID: ${{ inputs.skill }}
           RUN_OUTPUT: artifacts/cognitive-skill-battery/${{ github.run_id }}
         shell: bash
         run: |
           if [[ -z "${AI_RUNTIME_API_KEY}" ]]; then
             echo "::error::Repository secret AI_RUNTIME_API_KEY is missing."
             exit 1
+          fi
+          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+            SKILL_ID="$(tr -d "[:space:]" < .github/cognitive-skill-run)"
+          else
+            SKILL_ID="${{ inputs.skill }}"
           fi
           case "${SKILL_ID}" in
             automaticity|a-touch-of-grace|critical-thinking|context-course-correction|good-faith-collaboration|peer-review|optionality|software-literacy|task-integrity|verification-integrity) ;;
