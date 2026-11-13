@@ -30,6 +30,10 @@ def main() -> int:
     qbatch = (ROOT / args.qbatch_path).resolve()
     if not (qbatch / ".git").exists():
         raise SystemExit(f"Pinned Q-Batch checkout not found: {qbatch}")
+    venv_python = ROOT / ".venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    if not venv_python.exists():
+        raise SystemExit("Runtime virtual environment not found; run setup_environment.py first.")
+    runner_python = str(venv_python)
     output = (ROOT / args.output).resolve()
     output.mkdir(parents=True, exist_ok=True)
     index = []
@@ -47,14 +51,14 @@ def main() -> int:
         scorer_dir.mkdir(parents=True, exist_ok=True)
         controller_dir.mkdir(parents=True, exist_ok=True)
         subprocess.run([
-            sys.executable, "-m", "ai_experiment_runtime", "run",
+            runner_python, "-m", "ai_experiment_runtime", "run",
             "--spec", str(spec), "--output", str(run_dir), "--qbatch-path", str(qbatch),
         ], cwd=ROOT, env=env, check=True)
         report = run_dir / "reports" / "batch-report.json"
         packet = scorer_dir / "scoring-packet.json"
         private_key = controller_dir / "blind-key.json"
         subprocess.run([
-            sys.executable, "-m", "ai_experiment_runtime", "blind-export",
+            runner_python, "-m", "ai_experiment_runtime", "blind-export",
             "--report", str(report), "--spec", str(spec),
             "--packet", str(packet), "--private-key", str(private_key),
         ], cwd=ROOT, env=env, check=True)
