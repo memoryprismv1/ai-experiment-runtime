@@ -105,4 +105,4 @@ python -m unittest discover -s tests -v
 
 CI checks the Python package, runs the synthetic two-condition experiment, then invokes Q-Batch's own verifier against the produced evidence. The workflow does not call a paid model or upload raw real-model traces.
 
-See [Architecture](docs/ARCHITECTURE.md), [Experiment format](docs/EXPERIMENT-FORMAT.md), [Q-Batch integration](docs/QBATCH-INTEGRATION.md), and [Independent evaluation](docs/INDEPENDENT-EVALUATION.md).
+See [Architecture](docs/ARCHITECTURE.md), [Experiment format](docs/EXPERIMENT-FORMAT.md), [Q-Batch integration](docs/QBATCH-INTEGRATION.md), and [Independent evaluation](docs/INDEPENDENT-EVALUATION.md). The ten-skill paired test battery is documented in [Cognitive skill experiments](experiments/cognitive-skills/README.md).
