@@ -25,16 +25,16 @@ The battery runner randomly assigns the intervention to A or B for each skill ex
 
 The setup script fetches Q-Batch and the skills repository at pinned revisions. The skills checkout is a read-only test subject; this runtime does not modify it.
 
-The default runner uses a local Ollama model (`qwen2.5:7b`) through its OpenAI-compatible local endpoint. It requires no API key, API credits, or external inference account. In GitHub Actions, the workflow installs Ollama, downloads the model, and runs the selected skill automatically. For a local machine, install Ollama and pull the model first:
+The default runner uses a local Ollama model (`qwen2.5:3b`) through its OpenAI-compatible local endpoint. It requires no API key, API credits, or external inference account. In GitHub Actions, the workflow installs Ollama, downloads the model, and runs the selected skill automatically. For a local machine, install Ollama and pull the model first:
 
 ```bash
-ollama pull qwen2.5:7b
+ollama pull qwen2.5:3b
 ollama serve
 python setup_environment.py
 python scripts/run_cognitive_skill_battery.py
 ```
 
-The runner defaults to `qwen2.5:7b` at `http://127.0.0.1:11434/v1`. Override `--model` and `--base-url` to use another local OpenAI-compatible server. Both conditions use the same model, temperature and token limit. The workflow uses a GitHub-hosted runner, so model inference runs on that temporary machine; there is no API billing, although Actions runtime and model-download limits still apply.
+The runner defaults to `qwen2.5:3b` at `http://127.0.0.1:11434/v1`. Override `--model` and `--base-url` to use another local OpenAI-compatible server. Both conditions use the same model, temperature and token limit. The workflow uses a GitHub-hosted runner, so model inference runs on that temporary machine; there is no API billing, although Actions runtime and model-download limits still apply.
 
 The runner produces:
 - Q-Batch-verified experiment reports and raw evidence;
