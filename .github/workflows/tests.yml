@@ -38,7 +38,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Compile runtime
-        run: python -m compileall -q src tests setup_environment.py
+        run: python -m compileall -q src tests scripts setup_environment.py
       - name: Run runtime unit and Q-Batch integration tests
         env:
           PYTHONPATH: src
