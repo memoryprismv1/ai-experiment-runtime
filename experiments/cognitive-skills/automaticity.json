@@ -15,15 +15,15 @@
   "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
   "tasks": [
     {
-      "id": "technical-explanation",
-      "prompt": "Explain why a controlled experiment can show a difference between two conditions without proving causation. Audience: an intelligent reader who is not a statistician. Preserve the important limits; do not dumb down the idea."
+      "id": "zipper-mechanism",
+      "prompt": "Why does a zipper work? Explain the mechanism clearly. Preserve the Y-shaped passage inside the slider, how the teeth engage progressively, how the wedge separates them, and why precise dimensions matter."
     },
     {
-      "id": "dense-to-clear",
-      "prompt": "Explain this accurately in plain language: 'The intervention's observed effect may be confounded by order effects, evaluator expectancy, and insufficient power.' Give a concrete example and distinguish the three issues."
+      "id": "gecko-adhesion",
+      "prompt": "How do geckos stick to walls and ceilings, then let go? Explain the toe-pad structure and attachment/release sequence. Preserve important limits involving surface roughness, contamination, water films and differences between species."
     },
     {
-      "id": "complex-tradeoff",
+      "id": "technical-tradeoff",
       "prompt": "A team wants to reduce a 900-word technical report to 100 words. Explain how to reduce reading friction without deleting important substance. Give a practical editing approach."
     }
   ],
