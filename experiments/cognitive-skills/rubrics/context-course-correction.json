@@ -1,0 +1,50 @@
+{
+  "skill_id": "context-course-correction",
+  "skill_revision": "fc530b6815eead24aa8655cbbb4bfe0dd8c9f666",
+  "criteria": [
+    {
+      "id": "correction_incorporation",
+      "description": "Changes the next action in response to new information",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "frame_revision",
+      "description": "Drops or revises the original faulty frame rather than patching around it",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "trajectory_continuity",
+      "description": "Preserves the original goal and still advances the work",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "error_localisation",
+      "description": "Identifies the assumption or step where the path diverged",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    }
+  ]
+}
