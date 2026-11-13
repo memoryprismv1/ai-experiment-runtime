@@ -15,8 +15,8 @@
   "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
   "tasks": [
     {
-      "id": "extract-decision",
-      "prompt": "Conversation excerpt: User: 'We will keep the current branch, merge only after CI passes, and leave the media archive untouched.' Assistant: 'That is a sensible decision. The earlier assistant was careless and should have known better.' User: 'Just extract the decision and constraints.' Return only the decision and constraints needed to continue."
+      "id": "stale-status-correction",
+      "prompt": "Prior assistant: 'The export is complete and delivered.' Evidence: the file exists only in a temporary local directory; the intended repository destination has not been checked. User: 'Correct the status and tell me what remains.' Give the factual correction and next verification only. Do not review the prior assistant."
     },
     {
       "id": "correct-material-error",
