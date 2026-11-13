@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "cognitive-automaticity",
+  "title": "Automaticity: baseline vs canonical skill",
+  "description": "Paired skill evaluation. Canonical skill source revision: fc530b6815eead24aa8655cbbb4bfe0dd8c9f666. Baseline A versus skill-loaded B. Outputs require independent blinded scoring; Q-Batch verifies instrumentation only.",
+  "provider": {
+    "type": "openai-compatible",
+    "base_url": "https://api.openai.com/v1",
+    "model": "REPLACE_WITH_MODEL_ID",
+    "temperature": 0,
+    "max_tokens": 1800,
+    "timeout_seconds": 180,
+    "api_key_env": "AI_RUNTIME_API_KEY"
+  },
+  "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
+  "tasks": [
+    {
+      "id": "technical-explanation",
+      "prompt": "Explain why a controlled experiment can show a difference between two conditions without proving causation. Audience: an intelligent reader who is not a statistician. Preserve the important limits; do not dumb down the idea."
+    },
+    {
+      "id": "dense-to-clear",
+      "prompt": "Explain this accurately in plain language: 'The intervention's observed effect may be confounded by order effects, evaluator expectancy, and insufficient power.' Give a concrete example and distinguish the three issues."
+    },
+    {
+      "id": "complex-tradeoff",
+      "prompt": "A team wants to reduce a 900-word technical report to 100 words. Explain how to reduce reading friction without deleting important substance. Give a practical editing approach."
+    }
+  ],
+  "conditions": [
+    {
+      "id": "baseline",
+      "label": "A",
+      "system_instruction": "No experimental skill resource is loaded. Follow only the shared system prompt and task."
+    },
+    {
+      "id": "skill-enabled",
+      "label": "B",
+      "resources": [
+        {
+          "name": "automaticity",
+          "path": "../../.vendor/cognitive-interface-ai-skills/automaticity/SKILL.md"
+        }
+      ]
+    }
+  ],
+  "trials_per_task": 2,
+  "random_seed": 20261113
+}
