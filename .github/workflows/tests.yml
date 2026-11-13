@@ -52,6 +52,11 @@ jobs:
           PYTHONPATH: src
           Q_BATCH_PATH: ${{ github.workspace }}/qbatch
         run: python -m ai_experiment_runtime run --spec examples/deterministic-pair.json --output "$RUNNER_TEMP/ai-experiment-runtime-smoke" --qbatch-path "$Q_BATCH_PATH"
+      - name: Verify clean environment bootstrap
+        if: matrix.python-version == '3.13'
+        run: |
+          python setup_environment.py --venv "$RUNNER_TEMP/aier-bootstrap-venv"
+          "$RUNNER_TEMP/aier-bootstrap-venv/bin/aier" run --spec examples/deterministic-pair.json --output "$RUNNER_TEMP/aier-bootstrap-smoke"
       - name: Preserve synthetic verification report
         if: matrix.python-version == '3.13'
         uses: actions/upload-artifact@v4
