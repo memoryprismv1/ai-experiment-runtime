@@ -23,6 +23,10 @@ on:
           - task-integrity
           - verification-integrity
 
+concurrency:
+  group: cognitive-skill-battery
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
