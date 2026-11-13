@@ -32,7 +32,14 @@ def main(argv: list[str] | None = None) -> int:
             report = run_experiment(args.spec, args.output, args.qbatch_path)
             print(json.dumps({k: v for k, v in report.items() if k != "run_results"}, indent=2, sort_keys=True))
             return 0 if report["status"] == "PASS" else 1
-        if args.command == "evaluate":\n            result = evaluate_report(args.report, args.rubric, args.scores)\n            output = Path(args.output)\n            output.parent.mkdir(parents=True, exist_ok=True)\n            output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\\n", encoding="utf-8")\n            print(json.dumps(result, indent=2, sort_keys=True))\n            return 0\n        _, _, validators = load_qbatch(args.qbatch_path)
+        if args.command == "evaluate":
+            result = evaluate_report(args.report, args.rubric, args.scores)
+            output = Path(args.output)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 0
+        _, _, validators = load_qbatch(args.qbatch_path)
         validation = validators[0](Path(args.run_dir))
         print(json.dumps(validation, indent=2, sort_keys=True))
         return 0
