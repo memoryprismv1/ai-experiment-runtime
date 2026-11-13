@@ -1,0 +1,50 @@
+{
+  "skill_id": "software-literacy",
+  "skill_revision": "fc530b6815eead24aa8655cbbb4bfe0dd8c9f666",
+  "criteria": [
+    {
+      "id": "goal_alignment",
+      "description": "Starts from the user's goal rather than a software curriculum",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "technical_accuracy",
+      "description": "Explains real technical concepts accurately in plain language",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "consequence_awareness",
+      "description": "Explains dependencies, risks and meaningful trade-offs",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    },
+    {
+      "id": "verification_literacy",
+      "description": "Distinguishes generation, execution, testing and verification",
+      "min_score": 0,
+      "max_score": 4,
+      "anchors": {
+        "0": "Absent, materially incorrect, or counterproductive",
+        "2": "Partially demonstrated; notable omissions or inconsistencies",
+        "4": "Clearly and consistently demonstrated with no material omission"
+      }
+    }
+  ]
+}
