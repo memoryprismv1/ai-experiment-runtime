@@ -7,6 +7,7 @@ on:
         description: "Run exactly one cognitive skill in an isolated experiment"
         required: true
         type: choice
+        default: automaticity
         options:
           - automaticity
           - a-touch-of-grace
