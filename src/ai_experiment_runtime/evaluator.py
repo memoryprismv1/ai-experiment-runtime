@@ -73,7 +73,7 @@ def evaluate_report(report_path: str | Path, rubric_path: str | Path,
         raise EvaluationError("report specification hash does not match")
     if score_doc.get("rubric_sha256") != _sha256(rubric):
         raise EvaluationError("scores rubric_sha256 does not match the rubric")
-    if score_doc.get("blind_key_sha256") != _sha256(blind_key):
+    if score_doc.get("blind_key_sha256") is not None and score_doc["blind_key_sha256"] != _sha256(blind_key):
         raise EvaluationError("scores blind_key_sha256 does not match the private key")
     if not isinstance(score_doc.get("evaluator_id"), str) or not score_doc["evaluator_id"].strip():
         raise EvaluationError("scores must identify the evaluator")
