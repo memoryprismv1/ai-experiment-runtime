@@ -16,7 +16,7 @@ The initial release includes:
 - Hashes for the experiment specification, tasks, and all loaded text resources.
 - Fresh trial workspaces and runner-owned evidence directories outside those workspaces.
 - Q-Batch's own append-only logger and validator, imported from a pinned checkout. No Q-Batch implementation is copied here.
-- Separate reporting of execution completion and Q-Batch evidence verification. Response quality is not inferred from a green instrumentation check.
+- Separate reporting of execution completion and Q-Batch evidence verification. Response quality is not inferred from a green instrumentation check.\n- An independent rubric evaluator that accepts external blinded scores and reports descriptive paired differences without self-grading.
 
 ## What it does not claim
 
@@ -105,4 +105,4 @@ python -m unittest discover -s tests -v
 
 CI checks the Python package, runs the synthetic two-condition experiment, then invokes Q-Batch's own verifier against the produced evidence. The workflow does not call a paid model or upload raw real-model traces.
 
-See [Architecture](docs/ARCHITECTURE.md), [Experiment format](docs/EXPERIMENT-FORMAT.md), and [Q-Batch integration](docs/QBATCH-INTEGRATION.md).
+See [Architecture](docs/ARCHITECTURE.md), [Experiment format](docs/EXPERIMENT-FORMAT.md), [Q-Batch integration](docs/QBATCH-INTEGRATION.md), and [Independent evaluation](docs/INDEPENDENT-EVALUATION.md).
