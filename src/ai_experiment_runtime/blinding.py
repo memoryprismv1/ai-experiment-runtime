@@ -67,6 +67,12 @@ def export_blinded_packet(report_path: str | Path, spec_path: str | Path,
     if any(labels != {"A", "B"} for labels in groups.values()):
         raise BlindingError("report contains an incomplete A/B pair")
 
+    run_root = Path(report_path).resolve().parent.parent
+    condition_key_path = run_root / "controller" / "condition-key.json"
+    condition_key = _read(condition_key_path)
+    if set(condition_key) != {"A", "B"} or set(condition_key.values()) != {"baseline", "skill-enabled"}:
+        raise BlindingError("controller condition key must map A/B to baseline and skill-enabled")
+
     # Shuffle the scorer-facing packet independently of execution order.
     import random
     random.SystemRandom().shuffle(packet_samples)
@@ -81,7 +87,7 @@ def export_blinded_packet(report_path: str | Path, spec_path: str | Path,
         "key_version": "1.0",
         "experiment_id": report["experiment_id"],
         "report_spec_sha256": report["spec_sha256"],
-        "samples": key_samples,
+        "samples": key_samples,\n        "condition_key": condition_key,
     }
     packet_target, key_target = Path(packet_path), Path(key_path)
     if packet_target.resolve() == key_target.resolve():
