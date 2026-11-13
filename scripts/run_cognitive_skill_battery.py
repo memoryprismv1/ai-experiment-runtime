@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import secrets
 import subprocess
 import sys
 from pathlib import Path
@@ -46,23 +47,35 @@ def main() -> int:
         rubric = SUITE / "rubrics" / f"{skill_id}.json"
         skill_root = output / skill_id
         run_dir = skill_root / "experiment"
+        controller_dir.mkdir(parents=True, exist_ok=True)
         scorer_dir = skill_root / "scorer"
         controller_dir = skill_root / "controller"
         scorer_dir.mkdir(parents=True, exist_ok=True)
         controller_dir.mkdir(parents=True, exist_ok=True)
+        run_spec = SUITE / f".{skill_id}-{secrets.token_hex(6)}.json"
+        spec_doc = json.loads(spec.read_text(encoding="utf-8"))
+        flip_labels = secrets.choice([False, True])
+        for condition in spec_doc["conditions"]:
+            if condition["id"] == "baseline":
+                condition["label"] = "B" if flip_labels else "A"
+            else:
+                condition["label"] = "A" if flip_labels else "B"
+        run_spec.write_text(json.dumps(spec_doc, indent=2) + "\\n", encoding="utf-8")
+        snapshot = controller_dir / "run-spec.json"
+        snapshot.write_text(run_spec.read_text(encoding="utf-8"), encoding="utf-8")
         subprocess.run([
             runner_python, "-m", "ai_experiment_runtime", "run",
-            "--spec", str(spec), "--output", str(run_dir), "--qbatch-path", str(qbatch),
+            "--spec", str(run_spec), "--output", str(run_dir), "--qbatch-path", str(qbatch),
         ], cwd=ROOT, env=env, check=True)
         report = run_dir / "reports" / "batch-report.json"
         packet = scorer_dir / "scoring-packet.json"
         private_key = controller_dir / "blind-key.json"
         subprocess.run([
             runner_python, "-m", "ai_experiment_runtime", "blind-export",
-            "--report", str(report), "--spec", str(spec),
+            "--report", str(report), "--spec", str(run_spec),
             "--packet", str(packet), "--private-key", str(private_key),
         ], cwd=ROOT, env=env, check=True)
-        rubric_copy = scorer_dir / "rubric.json"
+        run_spec.unlink(missing_ok=True)\n        condition_key_copy = controller_dir / "condition-key.json"\n        condition_key_copy.write_text((run_dir / "controller" / "condition-key.json").read_text(encoding="utf-8"), encoding="utf-8")\n        rubric_copy = scorer_dir / "rubric.json"
         rubric_copy.write_text(rubric.read_text(encoding="utf-8"), encoding="utf-8")
         index.append({
             "skill_id": skill_id,
@@ -70,7 +83,7 @@ def main() -> int:
             "report": str(report.relative_to(output)),
             "scoring_packet": str(packet.relative_to(output)),
             "rubric": str(rubric_copy.relative_to(output)),
-            "private_key": str(private_key.relative_to(output)),
+            "private_key": str(private_key.relative_to(output)),\n            "condition_key": str(condition_key_copy.relative_to(output)),\n            "run_spec_snapshot": str(snapshot.relative_to(output)),
             "samples": 12,
         })
     (output / "index.json").write_text(json.dumps({
