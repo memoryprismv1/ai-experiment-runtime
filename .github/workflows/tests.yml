@@ -27,6 +27,12 @@ jobs:
           repository: memoryprismv1/q-batch-of-evidence
           ref: c059f5d5f969edcc7a87e7e288956a39c945cdc8
           path: qbatch
+      - name: Check out pinned cognitive skills (read-only test subjects)
+        uses: actions/checkout@v4
+        with:
+          repository: memoryprismv1/cognitive-interface-ai-skills
+          ref: fc530b6815eead24aa8655cbbb4bfe0dd8c9f666
+          path: .vendor/cognitive-interface-ai-skills
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
