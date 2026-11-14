@@ -65,7 +65,7 @@ jobs:
           done
           curl -fsS http://127.0.0.1:11434/api/tags >/dev/null || { cat /tmp/ollama.log; exit 1; }
           ollama pull qwen2.5:3b
-      - name: Run local-model cognitive-skill experiments
+      - name: Resolve selected skill and run inference preflight
         env:
           RUN_OUTPUT: artifacts/cognitive-skill-battery/${{ github.run_id }}
         shell: bash
@@ -79,6 +79,13 @@ jobs:
             automaticity|a-touch-of-grace|critical-thinking|context-course-correction|good-faith-collaboration|peer-review|optionality|software-literacy|task-integrity|verification-integrity) ;;
             *) echo "::error::Select exactly one supported skill."; exit 1 ;;
           esac
+          echo "SKILL_ID=${SKILL_ID}" >> "$GITHUB_ENV"
+          .venv/bin/python scripts/run_cognitive_skill_preflight.py --skill "${SKILL_ID}" --output "${RUN_OUTPUT}/preflight" --model qwen2.5:3b --base-url http://127.0.0.1:11434/v1
+      - name: Run local-model cognitive-skill experiments
+        env:
+          RUN_OUTPUT: artifacts/cognitive-skill-battery/${{ github.run_id }}
+        shell: bash
+        run: |
           .venv/bin/python scripts/run_cognitive_skill_battery.py --skills "${SKILL_ID}" --output "${RUN_OUTPUT}" --model qwen2.5:3b --base-url http://127.0.0.1:11434/v1
       - name: Upload blinded scorer packets
         if: success()
@@ -95,6 +102,7 @@ jobs:
           name: cognitive-skill-controller-and-evidence-${{ github.run_id }}
           path: |
             artifacts/cognitive-skill-battery/${{ github.run_id }}/index.json
+            artifacts/cognitive-skill-battery/${{ github.run_id }}/preflight/
             artifacts/cognitive-skill-battery/${{ github.run_id }}/*/controller/
             artifacts/cognitive-skill-battery/${{ github.run_id }}/*/experiment/
           if-no-files-found: error
