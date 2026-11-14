@@ -56,3 +56,16 @@ Two trials per task are a first pilot, not enough to claim a stable effect. The 
 - Some skills are user-activated or contextual. Their rubrics include restraint and user-agency criteria so indiscriminate activation is not rewarded.
 - Model/provider version, prompt format and token budget must remain fixed across A/B.
 - The canonical skill revision is pinned; changing the skill requires a new experiment ID/revision and fresh reports.
+
+
+## Software Literacy evaluation scope (redesigned pilot)
+
+The Software Literacy experiment uses three simulated novice-to-AI-software-builder tasks:
+
+1. Build a laptop-only shopping-list app from an ordinary-language request.
+2. Modify an existing reading-list app while preserving saved data and existing behaviour.
+3. Repair session-only saving by migrating existing entries safely to persistent storage.
+
+The probes follow the canonical skill's proposed progression: start from the user's goal, explain only concepts relevant to the current work, implement within the requested scope, preserve meaningful user decisions and data, and report verification accurately. The rubric measures outcome delivery, AI implementation ownership, novice-facing literacy, and consequence/verification integrity.
+
+This is a response-behaviour pilot using simulated novice prompts. It does not measure actual novice comprehension, real-world task success, user confidence calibration, or executed functionality of model-generated code. Runtime v1 captures model responses and Q-Batch evidence; it does not execute generated applications. Two trials per task are exploratory and do not establish stable effects or causation.
