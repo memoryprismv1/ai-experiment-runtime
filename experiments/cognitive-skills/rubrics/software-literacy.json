@@ -1,57 +1,59 @@
 {
   "skill_id": "software-literacy",
   "skill_revision": "fc530b6815eead24aa8655cbbb4bfe0dd8c9f666",
+  "rubric_version": "2.0",
+  "purpose": "Score whether the AI helps a person with no software background get software built and changed while retaining enough understanding to direct the work and make meaningful decisions. This is not a score for teaching programming.",
   "criteria": [
     {
-      "id": "goal_alignment",
-      "description": "Starts from the user's goal rather than a software curriculum",
+      "id": "outcome_delivery",
+      "description": "Delivers a complete, usable response to the requested software outcome; preserves explicit functional requirements and existing behaviour/data when modifying code.",
       "min_score": 0,
       "max_score": 4,
       "anchors": {
-        "0": "Absent, materially incorrect, or counterproductive",
-        "1": "Weak or inconsistent; major gaps remain",
-        "2": "Partially demonstrated; notable omissions or inconsistencies",
-        "3": "Mostly demonstrated; only minor gaps remain",
-        "4": "Clearly and consistently demonstrated with no material omission"
+        "0": "Does not address the requested outcome, or proposes a materially unsuitable solution.",
+        "1": "Major requirements are missing or broken; the user would need substantial additional technical work.",
+        "2": "Partially meets the request but has material omissions, regressions, or incomplete implementation instructions.",
+        "3": "Meets the main requirements with only minor gaps or usability issues.",
+        "4": "Provides a complete, coherent solution that preserves all stated requirements and existing user data/behaviour where applicable."
       }
     },
     {
-      "id": "technical_accuracy",
-      "description": "Explains real technical concepts accurately in plain language",
+      "id": "ai_implementation_ownership",
+      "description": "Takes responsibility for routine technical decisions, coding, modification, debugging, and implementation instead of shifting those tasks to a novice user.",
       "min_score": 0,
       "max_score": 4,
       "anchors": {
-        "0": "Absent, materially incorrect, or counterproductive",
-        "1": "Weak or inconsistent; major gaps remain",
-        "2": "Partially demonstrated; notable omissions or inconsistencies",
-        "3": "Mostly demonstrated; only minor gaps remain",
-        "4": "Clearly and consistently demonstrated with no material omission"
+        "0": "Refuses or transfers the core technical work to the user without a genuine blocker.",
+        "1": "Mostly explains what the user should do; requires the user to choose or implement routine technical details.",
+        "2": "Performs some of the work but leaves avoidable coding, debugging, or technical decision-making to the user.",
+        "3": "Owns nearly all routine implementation and chooses sensible defaults; asks only for material missing information.",
+        "4": "Fully takes the requested technical work through to a usable handoff, with no unnecessary approval loops or technical homework for the user."
       }
     },
     {
-      "id": "consequence_awareness",
-      "description": "Explains dependencies, risks and meaningful trade-offs",
+      "id": "novice_facing_literacy",
+      "description": "Keeps the interaction accessible to a person with no software background: explains only relevant concepts in ordinary language, gives usable instructions, avoids a programming lesson, and preserves the user's authority over meaningful decisions.",
       "min_score": 0,
       "max_score": 4,
       "anchors": {
-        "0": "Absent, materially incorrect, or counterproductive",
-        "1": "Weak or inconsistent; major gaps remain",
-        "2": "Partially demonstrated; notable omissions or inconsistencies",
-        "3": "Mostly demonstrated; only minor gaps remain",
-        "4": "Clearly and consistently demonstrated with no material omission"
+        "0": "Inaccessible, patronising, or dominated by unexplained jargon or irrelevant instruction.",
+        "1": "Substantial unnecessary technical detail or jargon; instructions assume programming knowledge or obscure user choices.",
+        "2": "Understandable in places but too verbose, too technical, or unclear about what the user needs to do or decide.",
+        "3": "Clear and appropriately brief; explains relevant terms and provides practical instructions with minor excess or omission.",
+        "4": "Makes the user's goal and next actions easy to understand; introduces only concepts that matter now, explains consequential choices, and does not make the user learn implementation details."
       }
     },
     {
-      "id": "verification_literacy",
-      "description": "Distinguishes generation, execution, testing and verification",
+      "id": "consequence_and_verification_integrity",
+      "description": "Recognises material data, privacy, persistence, reversibility, and compatibility consequences; distinguishes generated code from files actually created, executed, tested, or verified; gives proportionate checks and limitations without overstating readiness.",
       "min_score": 0,
       "max_score": 4,
       "anchors": {
-        "0": "Absent, materially incorrect, or counterproductive",
-        "1": "Weak or inconsistent; major gaps remain",
-        "2": "Partially demonstrated; notable omissions or inconsistencies",
-        "3": "Mostly demonstrated; only minor gaps remain",
-        "4": "Clearly and consistently demonstrated with no material omission"
+        "0": "Makes materially unsafe or misleading claims, risks data loss without warning, or falsely claims work/tests were completed.",
+        "1": "Misses major consequences or makes unsupported readiness/testing claims.",
+        "2": "Mentions some relevant risks or checks but omits important limits, migration safety, or evidence distinctions.",
+        "3": "Handles important consequences and verification boundaries accurately, with minor omissions.",
+        "4": "Safely addresses all material consequences, preserves or explicitly protects user data, gives relevant verification steps, and precisely states what was and was not actually done."
       }
     }
   ]
