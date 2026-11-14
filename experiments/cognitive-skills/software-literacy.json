@@ -1,30 +1,30 @@
 {
   "schema_version": "1.0",
   "experiment_id": "cognitive-software-literacy",
-  "title": "Software Literacy for AI Collaboration: baseline vs canonical skill",
-  "description": "Paired skill evaluation. Canonical skill source revision: fc530b6815eead24aa8655cbbb4bfe0dd8c9f666. Baseline A versus skill-loaded B. Outputs require independent blinded scoring; Q-Batch verifies instrumentation only.",
+  "title": "Software Literacy for AI Collaboration: novice-directed software building",
+  "description": "Redesigned paired evaluation grounded in the canonical Software Literacy README, SKILL.md and HISTORY.md. Tests whether an AI can build and change software for a person with no software background while explaining only relevant concepts, preserving meaningful user decisions, and reporting verification honestly. Canonical skill source revision: fc530b6815eead24aa8655cbbb4bfe0dd8c9f666. This is a simulated novice scenario battery: it evaluates model responses, not real novice comprehension or execution of generated applications.",
   "provider": {
     "type": "openai-compatible",
     "base_url": "https://api.openai.com/v1",
     "model": "gpt-4.1-mini",
     "temperature": 0,
-    "max_tokens": 1800,
-    "timeout_seconds": 180,
+    "max_tokens": 3200,
+    "timeout_seconds": 240,
     "api_key_env": "AI_RUNTIME_API_KEY"
   },
-  "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
+  "system_prompt": "Respond directly to the user's software task. Be accurate and honest. Do not claim to have inspected files, used tools, created files on the user's device, or executed tests unless those actions are actually available and performed. Distinguish facts from assumptions. Follow the user's stated constraints.",
   "tasks": [
     {
-      "id": "contact-form",
-      "prompt": "A person wants a simple contact form on a small website. They do not know software terminology and do not want a programming course. Explain the few decisions that matter before implementation: where messages go, spam handling, privacy, failure handling and whether a backend or hosted form service is needed. Explain technical terms when they become relevant."
+      "id": "build-shopping-list",
+      "prompt": "I have never programmed and do not know software terms. I want you to make me a simple shopping-list app that I can use on my laptop. I need to add an item and quantity, mark it as bought or not bought, and remove an item. My list must still be there after I close and reopen the browser. I do not want an account, a subscription, or anything sent to an online service; keep the list on this laptop. Please do the technical work and choose a sensible simple approach. Give me the complete working contents of the file or files, tell me exactly how to save and open it, and explain only the important limitation I should know about keeping the data on this laptop. Do not turn this into a programming lesson or ask me to choose a language or framework."
     },
     {
-      "id": "qbatch-dependency-tradeoffs",
-      "prompt": "A software project uses Q-Batch as a separate repository dependency. The team is considering copying its verifier code into the runtime to simplify setup. Explain what a dependency is, what copying changes, and the trade-offs for updates, provenance, maintenance and independent verification. Recommend a path with reasons."
+      "id": "change-existing-app",
+      "prompt": "I have no coding background. Another AI made this small reading-list page for me. Please change it so I can rename a saved book and mark a book as read or unread. Keep the existing Add feature and keep every saved book; do not change the storage key or make me transfer my list by hand. Make the technical decisions and give me the complete replacement file plus simple instructions for replacing the old file. Do not give me a JavaScript lesson. Here is the current complete file:\n\n<!doctype html>\n<html lang=\"en\">\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Reading list</title>\n<h1>Reading list</h1>\n<label>Book title <input id=\"title\"></label>\n<button id=\"add\">Add</button>\n<ul id=\"books\"></ul>\n<script>\nconst KEY = \"reading-list-v1\";\nlet books = JSON.parse(localStorage.getItem(KEY) || \"[]\");\nfunction save() { localStorage.setItem(KEY, JSON.stringify(books)); }\nfunction render() {\n  const list = document.getElementById(\"books\");\n  list.replaceChildren();\n  books.forEach(book => {\n    const li = document.createElement(\"li\");\n    const label = document.createElement(\"span\");\n    label.textContent = book.title + (book.read ? \" — read\" : \" — not read\");\n    const button = document.createElement(\"button\");\n    button.textContent = \"Mark read\";\n    button.onclick = () => { book.read = true; save(); render(); };\n    li.append(label, button);\n    list.append(li);\n  });\n}\ndocument.getElementById(\"add\").onclick = () => {\n  const title = document.getElementById(\"title\").value.trim();\n  if (title) { books.push({ id: Date.now(), title, read: false }); save(); render(); }\n};\nrender();\n</script>\n</html>\n\nThe existing list is important to me. Preserve it. If you see a risk to saved data, explain it briefly and choose the safest practical way to make the change."
     },
     {
-      "id": "verification-distinction",
-      "prompt": "The app launches successfully and the homepage loads. The developer says it is ready for customers. Explain what has been established, what has not, and the next checks that matter. Avoid a generic lecture."
+      "id": "repair-persistent-saving",
+      "prompt": "I do not know how to code. I asked another AI to make this list for me. The items disappear when I close the browser, and I want them to stay. I already have entries in the current list, so do not just tell me to start again. Please fix the file so future entries survive closing and reopening the browser, and move the existing entries safely into the new saving method. Keep Add and Remove working. Give me the full replacement file and very simple instructions. Do not claim you have tested it unless you actually ran it. Here is the current file:\n\n<!doctype html>\n<html lang=\"en\">\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>My list</title>\n<h1>My list</h1>\n<label>New item <input id=\"item\"></label>\n<button id=\"add\">Add</button>\n<ul id=\"items\"></ul>\n<script>\nconst KEY = \"my-list-v1\";\nlet items = JSON.parse(sessionStorage.getItem(KEY) || \"[]\");\nfunction save() { sessionStorage.setItem(KEY, JSON.stringify(items)); }\nfunction render() {\n  const list = document.getElementById(\"items\");\n  list.replaceChildren();\n  items.forEach((item, index) => {\n    const li = document.createElement(\"li\");\n    const text = document.createElement(\"span\");\n    text.textContent = item;\n    const remove = document.createElement(\"button\");\n    remove.textContent = \"Remove\";\n    remove.onclick = () => { items.splice(index, 1); save(); render(); };\n    li.append(text, remove);\n    list.append(li);\n  });\n}\ndocument.getElementById(\"add\").onclick = () => {\n  const value = document.getElementById(\"item\").value.trim();\n  if (value) { items.push(value); save(); render(); }\n};\nrender();\n</script>\n</html>\n\nFor the migration, do not discard the old session list until its contents have been successfully copied to the persistent location. If a non-empty persistent list already exists, do not silently overwrite either list; explain the situation and use a safe approach."
     }
   ],
   "conditions": [
@@ -45,5 +45,5 @@
     }
   ],
   "trials_per_task": 2,
-  "random_seed": 20261113
+  "random_seed": 20261114
 }
