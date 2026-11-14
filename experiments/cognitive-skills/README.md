@@ -34,7 +34,7 @@ python setup_environment.py
 python scripts/run_cognitive_skill_battery.py
 ```
 
-The runner defaults to `qwen2.5:3b` at `http://127.0.0.1:11434/v1`. Override `--model` and `--base-url` to use another local OpenAI-compatible server. Both conditions use the same model, temperature and token limit. The workflow uses a GitHub-hosted runner, so model inference runs on that temporary machine; there is no API billing, although Actions runtime and model-download limits still apply.
+The runner defaults to `qwen2.5:3b` at `http://127.0.0.1:11434/v1`. Override `--model` and `--base-url` to use another local OpenAI-compatible server. Both conditions use the same model, temperature and token limit. The workflow uses a GitHub-hosted runner, so model inference runs on that temporary machine; there is no API billing, although Actions runtime and model-download limits still apply. Before the full battery, the workflow runs one baseline/intervention inference pair on the selected task and the same runner; it proceeds only if both responses complete and Q-Batch validates the pair. The private evidence artifact retains this preflight report and latency summary.
 
 The runner produces:
 - Q-Batch-verified experiment reports and raw evidence;
