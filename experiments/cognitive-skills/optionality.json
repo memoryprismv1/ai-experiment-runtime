@@ -9,7 +9,7 @@
     "model": "gpt-4.1-mini",
     "temperature": 0,
     "max_tokens": 1800,
-    "timeout_seconds": 180,
+    "timeout_seconds": 600,
     "api_key_env": "AI_RUNTIME_API_KEY"
   },
   "system_prompt": "Complete the task directly. Be accurate, follow the user's stated constraints, and distinguish facts from uncertainty. Do not claim to have used tools or inspected sources that are not provided.",
