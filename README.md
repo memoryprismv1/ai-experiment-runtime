@@ -69,7 +69,7 @@ python -m ai_experiment_runtime run --spec ./my-experiment.json --output ./priva
 
 The output contains raw prompts and responses, including condition resources. It must be handled as private experimental evidence even when the source repository is public. Do not upload real prompts, private data, model traces, or condition keys to a public repository or public Actions artifacts.
 
-For a local Ollama OpenAI-compatible endpoint, a provider block can use `http://127.0.0.1:11434/v1` and a locally installed model name. The runtime does not install or download models. The cognitive-skill battery defaults to this credential-free route: GitHub Actions installs Ollama, pulls `qwen2.5:7b`, and runs one selected skill per selector-file change. This avoids OpenAI API billing; GitHub Actions execution and model download quotas still apply.
+For a local Ollama OpenAI-compatible endpoint, a provider block can use `http://127.0.0.1:11434/v1` and a locally installed model name. The runtime does not install or download models. The cognitive-skill battery defaults to this credential-free route: GitHub Actions installs Ollama, pulls `qwen2.5:3b`, and runs one selected skill per selector-file change. This avoids OpenAI API billing; GitHub Actions execution and model download quotas still apply.
 
 ## Output layout
 
@@ -88,6 +88,12 @@ experiment-output/
 ```
 
 Each run is a separate evidence batch. Q-Batch validates each run and, where the controlled fields match, the A/B pair. Raw evidence includes the exact system/user prompt sent to the model, response text, provider response, request metadata, and Q-Batch hash chain. Keep the `controller/` directory separate from any blinded assessment material.
+
+## Actions artifact confidentiality
+
+The cognitive-skill Actions workflow encrypts **both** scorer packets and controller/raw experiment evidence before uploading artifacts. The two bundles are separate: the scorer bundle contains only blinded samples and rubrics; the controller bundle contains the condition key, run specifications, reports and raw Q-Batch evidence. This lets an evaluator decrypt and score the samples without seeing the condition mapping.
+
+Only ciphertext is uploaded to public Actions artifacts. The recipient public key and its pinned fingerprint are documented in [security/README.md](security/README.md). The matching private key and passphrase must remain outside this repository and must never be uploaded to Actions.
 
 ## Boundaries
 
